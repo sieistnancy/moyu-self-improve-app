@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>摸鱼自我提升</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23E8926B'/%3E%3Cpath d='M18 40c4-10 10-14 14-14s10 4 14 14' stroke='%23FFF' stroke-width='5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
+<meta name="theme-color" content="#FAF7F2">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="摸鱼打卡">
+<link rel="apple-touch-icon" href="icon-192.png">
 <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
 <style>
 :root{
@@ -269,6 +275,19 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
       <p>手机和电脑打开同一个页面（部署后的网址），在任意一端打卡，用下面任一方式把数据同步过去。合并时两边的打卡都会保留，不会互相覆盖。</p>
     </div>
     <div class="set-group">
+      <h3>自动同步房间（推荐）</h3>
+      <p class="sync-tip">开启后，这台设备与绑定同一房间的设备会自动互相同步打卡数据，不用手动复制粘贴。</p>
+      <div id="roomOff">
+        <button class="btn" id="roomStartBtn">开启自动同步</button>
+        <p class="sync-tip">开启后会生成随机房间码，用另一台设备扫下面的二维码绑定即可。</p>
+      </div>
+      <div id="roomOn" style="display:none">
+        <p class="sync-tip" id="roomStatus">连接中…</p>
+        <div id="roomQrBox" style="display:flex;justify-content:center;margin:10px 0"></div>
+        <button class="btn ghost" id="roomStopBtn" style="margin-top:4px">关闭自动同步</button>
+      </div>
+    </div>
+    <div class="set-group">
       <h3>扫码同步（电脑 → 手机，推荐）</h3>
       <p class="sync-tip">在电脑上点「生成同步二维码」，用手机相机扫一扫，会自动打开本页面并合并数据。</p>
       <div class="qr-zone" id="qrZone">
@@ -455,7 +474,7 @@ function loadState(){
   }catch(e){ return {records:{},goal:5,remind:1,remindHour:19,today:{},fav:[],syncTs:0}; }
 }
 var state = loadState();
-function save(){ localStorage.setItem(LS_KEY, JSON.stringify(state)); }
+function save(){ localStorage.setItem(LS_KEY, JSON.stringify(state)); schedulePush(); }
 
 /* ===== 日期工具 ===== */
 function fmtDate(d){ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
@@ -974,14 +993,120 @@ document.getElementById("mergeSyncBtn").addEventListener("click", function(){
 function parseSyncParam(){
   try{
     var m = location.search.match(/[?&]sync=([^&]+)/);
-    if(!m) return;
-    var json = atob(decodeURIComponent(m[1]));
-    var d = JSON.parse(json);
-    mergeSyncData(d);
-    history.replaceState(null, "", location.pathname + location.hash);
-    toast("已同步另一台设备的打卡数据");
+    if(m){
+      var json = atob(decodeURIComponent(m[1]));
+      var d = JSON.parse(json);
+      mergeSyncData(d);
+      toast("已同步另一台设备的打卡数据");
+    }
   }catch(e){}
+  /* 房间绑定：?room=topic#pw */
+  try{
+    var rm = location.search.match(/[?&]room=([^&]+)/);
+    if(rm){
+      var topic = decodeURIComponent(rm[1]);
+      var pw = decodeURIComponent((location.hash||"").replace(/^#/,""));
+      if(topic && pw){
+        room = { topic:topic, pw:pw, lastTime:"all" };
+        saveRoom(); renderRoom(); pollRoom();
+        toast("已绑定同步房间，开始自动同步");
+      }
+    }
+  }catch(e){}
+  try{ history.replaceState(null, "", location.pathname + location.hash); }catch(e){}
 }
+
+/* ===== 自动同步房间（ntfy 通道） ===== */
+var ROOM_KEY = "moyu-room-v1";
+var NTFY = "https://ntfy.sh/";
+var room = null;
+function loadRoom(){ try{ room = JSON.parse(localStorage.getItem(ROOM_KEY)||"null"); }catch(e){ room=null; } }
+function saveRoom(){ if(room) localStorage.setItem(ROOM_KEY, JSON.stringify(room)); else localStorage.removeItem(ROOM_KEY); }
+function randId(n){
+  var c="abcdefghjkmnpqrstuvwxyz23456789", s="";
+  for(var i=0;i<n;i++) s+=c[Math.floor(Math.random()*c.length)];
+  return s;
+}
+function xorB64(str, pw){
+  var out=[];
+  for(var i=0;i<str.length;i++) out.push(str.charCodeAt(i)^pw.charCodeAt(i%pw.length));
+  return btoa(String.fromCharCode.apply(null,out));
+}
+function unxorB64(b64, pw){
+  try{
+    var s=atob(b64), out=[];
+    for(var i=0;i<s.length;i++) out.push(String.fromCharCode(s.charCodeAt(i)^pw.charCodeAt(i%pw.length)));
+    return out.join("");
+  }catch(e){ return ""; }
+}
+var suppressPush = false;
+function pushRoom(){
+  if(!room) return;
+  if(location.protocol!=="http:" && location.protocol!=="https:") return;
+  var payload = xorB64(JSON.stringify(buildSyncData()), room.pw);
+  fetch(NTFY + room.topic, { method:"POST", body: payload }).catch(function(){});
+}
+function schedulePush(){
+  if(!room || suppressPush) return;
+  clearTimeout(window.__pushT);
+  window.__pushT = setTimeout(pushRoom, 3000);
+}
+function updRoomStatus(changed, offline){
+  var el = document.getElementById("roomStatus");
+  if(!el) return;
+  if(offline){ el.textContent = "同步通道连接中…（网络可能不稳，稍后自动重试）"; return; }
+  el.textContent = "自动同步已开启 · 上次拉取 " + new Date().toLocaleTimeString("zh-CN",{hour12:false}) + (changed ? " · 已合并新数据" : "");
+}
+function pollRoom(){
+  if(!room) return;
+  var url = NTFY + room.topic + "/json?poll=1&since=" + encodeURIComponent(room.lastTime||"all");
+  fetch(url).then(function(r){ return r.text(); }).then(function(txt){
+    var lines = String(txt||"").trim().split("\n").filter(Boolean);
+    var changed = false;
+    for(var i=0;i<lines.length;i++){
+      var ev; try{ ev = JSON.parse(lines[i]); }catch(e){ continue; }
+      if(ev.event !== "message" || !ev.message) continue;
+      var json = unxorB64(ev.message, room.pw);
+      if(!json) continue;
+      var d; try{ d = JSON.parse(json); }catch(e){ continue; }
+      suppressPush = true;
+      if(mergeSyncData(d)) changed = true;
+      suppressPush = false;
+      if(ev.time) room.lastTime = ev.time;
+    }
+    saveRoom();
+    if(changed) renderAll();
+    updRoomStatus(changed, false);
+  }).catch(function(){ updRoomStatus(false, true); });
+}
+function renderRoom(){
+  var off = document.getElementById("roomOff"), on = document.getElementById("roomOn");
+  if(!off || !on) return;
+  if(room){
+    off.style.display = "none"; on.style.display = "";
+    updRoomStatus(false);
+    var box = document.getElementById("roomQrBox");
+    box.innerHTML = "";
+    if(typeof QRCode !== "undefined" && location.protocol.indexOf("http") === 0){
+      var base = location.href.split("?")[0].split("#")[0];
+      var url = base + "?room=" + encodeURIComponent(room.topic) + "#" + encodeURIComponent(room.pw);
+      try{ new QRCode(box, {text:url, width:160, height:160, correctLevel:QRCode.CorrectLevel.L}); }catch(e){}
+    }
+  } else {
+    on.style.display = "none"; off.style.display = "";
+  }
+}
+document.getElementById("roomStartBtn").addEventListener("click", function(){
+  if(location.protocol !== "http:" && location.protocol !== "https:"){
+    toast("自动同步需要打开部署后的网址使用（地址栏是 github.io 开头，不是双击的本地文件）"); return;
+  }
+  room = { topic:"moyu-" + randId(20), pw: randId(10), lastTime:"all" };
+  saveRoom(); renderRoom(); pushRoom();
+  toast("房间已开启，用另一台设备扫码绑定");
+});
+document.getElementById("roomStopBtn").addEventListener("click", function(){
+  room = null; saveRoom(); renderRoom(); toast("已关闭自动同步");
+});
 
 /* ===== 提醒（浏览器通知） ===== */
 function checkRemind(){
@@ -1022,13 +1147,22 @@ function toast(msg){
 }
 
 function renderAll(){
-  renderTop(); ensureToday(); renderToday(); renderCatChips(); renderSet(); renderSync();
+  renderTop(); ensureToday(); renderToday(); renderCatChips(); renderSet(); renderSync(); renderRoom();
 }
 document.addEventListener("visibilitychange", function(){
   if(!document.hidden) renderAll();
 });
+loadRoom();
 parseSyncParam();
 renderAll();
+if(room){ pollRoom(); setInterval(pollRoom, 20000); }
+if(location.protocol === "https:"){
+  var ml = document.createElement("link"); ml.rel = "manifest"; ml.href = "manifest.webmanifest";
+  document.head.appendChild(ml);
+  if("serviceWorker" in navigator){
+    window.addEventListener("load", function(){ navigator.serviceWorker.register("sw.js").catch(function(){}); });
+  }
+}
 checkRemind();
 setInterval(function(){ var h = new Date().getHours(); if(h===state.remindHour) checkRemind(); }, 60000);
 

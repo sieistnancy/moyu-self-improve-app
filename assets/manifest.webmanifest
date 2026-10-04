@@ -1,0 +1,15 @@
+{
+  "name": "摸鱼自我提升",
+  "short_name": "摸鱼打卡",
+  "description": "利用上班碎片时间打卡的自我提升小工具",
+  "start_url": "摸鱼自我提升.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FAF7F2",
+  "theme_color": "#FAF7F2",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}
