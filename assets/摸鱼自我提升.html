@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>摸鱼自我提升</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23E8926B'/%3E%3Cpath d='M18 40c4-10 10-14 14-14s10 4 14 14' stroke='%23FFF' stroke-width='5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+<style>
+:root{
+  --bg:#FAF7F2; --card:#FFFFFF; --ink:#2B2A28; --sub:#8A857C; --line:#ECE7DE;
+  --accent:#E8926B; --accent-deep:#C96F4A; --accent-soft:#F9E8DD;
+  --c-diet:#8FA98F; --c-move:#8FA8C8; --c-mood:#D9A5A0; --c-learn:#C9A86A;
+  --c-money:#B39BC8; --c-work:#7FA8A0; --c-health:#D4A56E; --c-hobby:#C8918F;
+  --c-social:#9BA6C8; --c-reflect:#8FA6B8; --c-tidy:#A5A08A; --c-rest:#BFA87E;
+  --radius:18px; --shadow:0 1px 3px rgba(43,42,40,.05);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{font-size:16px}
+body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased}
+button{font-family:inherit;border:none;background:none;cursor:pointer;color:inherit}
+input{font-family:inherit}
+.app{max-width:640px;margin:0 auto;min-height:100vh;padding:0 16px 88px;position:relative}
+
+/* ===== 顶栏 ===== */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:18px 4px 10px}
+.brand{font-weight:700;font-size:18px;letter-spacing:.5px}
+.brand .dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--accent);margin-right:6px;vertical-align:1px}
+.top-right{display:flex;gap:10px;align-items:center}
+.icon-btn{width:38px;height:38px;border-radius:12px;background:var(--card);box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center;color:var(--ink)}
+.icon-btn svg{width:19px;height:19px}
+.week-pill{font-size:13px;color:var(--sub);background:var(--card);padding:6px 12px;border-radius:20px;box-shadow:var(--shadow)}
+
+/* ===== 今日视图 ===== */
+.date-line{font-size:14px;color:var(--sub);padding:2px 6px 4px}
+.greeting{font-size:22px;font-weight:700;padding:0 6px 14px}
+.hero-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;display:flex;align-items:center;gap:18px;margin-bottom:16px}
+.ring{position:relative;width:92px;height:92px;flex:none}
+.ring svg{transform:rotate(-90deg)}
+.ring .num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring .num b{font-size:24px;line-height:1}
+.ring .num span{font-size:11px;color:var(--sub);margin-top:3px}
+.hero-info{flex:1}
+.hero-info .h1{font-size:15px;font-weight:600}
+.hero-info .h2{font-size:13px;color:var(--sub);margin-top:4px}
+.streak{display:flex;gap:14px;margin-top:14px}
+.streak .item{flex:1;background:var(--bg);border-radius:14px;padding:10px 12px}
+.streak .item b{font-size:20px;display:block;line-height:1.2}
+.streak .item span{font-size:11px;color:var(--sub)}
+.streak .item.hot b{color:var(--accent-deep)}
+.suggest{display:flex;align-items:center;gap:10px;background:var(--accent-soft);border-radius:14px;padding:12px 14px;margin-bottom:16px;font-size:13px;color:#7A4A33}
+.suggest b{font-weight:700}
+.suggest button{margin-left:auto;background:var(--accent);color:#fff;font-size:12px;padding:7px 12px;border-radius:20px;flex:none}
+
+.section-title{display:flex;align-items:center;justify-content:space-between;padding:6px 6px 10px}
+.section-title h2{font-size:15px;font-weight:700}
+.section-title span{font-size:12px;color:var(--sub)}
+.task-list{display:flex;flex-direction:column;gap:10px}
+.task{display:flex;align-items:center;gap:12px;background:var(--card);border-radius:14px;padding:13px 14px;box-shadow:var(--shadow)}
+.task .check{width:24px;height:24px;border-radius:50%;border:2px solid var(--line);flex:none;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.task .check svg{width:13px;height:13px;stroke:#fff;stroke-width:3;fill:none;opacity:0}
+.task.done .check{background:var(--accent);border-color:var(--accent)}
+.task.done .check svg{opacity:1}
+.task .t-main{flex:1;min-width:0}
+.task .t-name{font-size:14px;font-weight:500}
+.task.done .t-name{color:var(--sub);text-decoration:line-through}
+.task .t-cat{font-size:11px;color:var(--sub);margin-top:2px;display:flex;align-items:center;gap:6px}
+.cat-dot{width:7px;height:7px;border-radius:50%;display:inline-block}
+.task .t-time{font-size:11px;color:var(--sub);flex:none}
+.empty{background:var(--card);border-radius:14px;padding:26px 18px;text-align:center;color:var(--sub);font-size:13px;box-shadow:var(--shadow)}
+.empty b{display:block;font-size:14px;color:var(--ink);margin-bottom:4px}
+
+/* ===== 清单库 ===== */
+.cats{display:flex;gap:8px;overflow-x:auto;padding:4px 4px 12px;scrollbar-width:none}
+.cats::-webkit-scrollbar{display:none}
+.cat-chip{flex:none;font-size:13px;padding:8px 14px;border-radius:20px;background:var(--card);box-shadow:var(--shadow);color:var(--sub)}
+.cat-chip.on{color:#fff;font-weight:600}
+.cat-chip.on[data-c="diet"]{background:var(--c-diet)}
+.cat-chip.on[data-c="move"]{background:var(--c-move)}
+.cat-chip.on[data-c="mood"]{background:var(--c-mood)}
+.cat-chip.on[data-c="learn"]{background:var(--c-learn)}
+.cat-chip.on[data-c="money"]{background:var(--c-money)}
+.cat-chip.on[data-c="work"]{background:var(--c-work)}
+.cat-chip.on[data-c="health"]{background:var(--c-health)}
+.cat-chip.on[data-c="hobby"]{background:var(--c-hobby)}
+.cat-chip.on[data-c="social"]{background:var(--c-social)}
+.cat-chip.on[data-c="reflect"]{background:var(--c-reflect)}
+.cat-chip.on[data-c="tidy"]{background:var(--c-tidy)}
+.cat-chip.on[data-c="rest"]{background:var(--c-rest)}
+.search{display:flex;align-items:center;gap:10px;background:var(--card);border-radius:14px;padding:11px 14px;box-shadow:var(--shadow);margin-bottom:12px}
+.search svg{width:17px;height:17px;stroke:var(--sub);fill:none;stroke-width:2;flex:none}
+.search input{flex:1;border:none;outline:none;font-size:14px;background:none;color:var(--ink)}
+.lib-list{display:flex;flex-direction:column;gap:8px}
+.lib-item{display:flex;align-items:center;gap:10px;background:var(--card);border-radius:12px;padding:11px 13px;box-shadow:var(--shadow)}
+.lib-item .nm{flex:1;font-size:13.5px}
+.lib-item .add{width:30px;height:30px;border-radius:10px;background:var(--bg);display:flex;align-items:center;justify-content:center;flex:none}
+.lib-item .add svg{width:15px;height:15px;stroke:var(--sub);fill:none;stroke-width:2.2}
+.lib-item .add.on{background:var(--accent-soft)}
+.lib-item .add.on svg{stroke:var(--accent-deep)}
+
+/* ===== 统计 ===== */
+.stat-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;margin-bottom:14px}
+.stat-card h3{font-size:14px;font-weight:700;margin-bottom:4px}
+.stat-card .sub{font-size:12px;color:var(--sub);margin-bottom:12px}
+.heat-wrap{overflow-x:auto}
+.heat{display:grid;grid-auto-flow:column;grid-template-rows:repeat(7,1fr);gap:4px;min-width:520px;padding-bottom:4px}
+.heat .cell{width:17px;height:17px;border-radius:4px;background:var(--line)}
+.heat .cell.l1{background:#F6DFD2}
+.heat .cell.l2{background:#EFC3AC}
+.heat .cell.l3{background:#E8A788}
+.heat .cell.l4{background:var(--accent)}
+.heat .cell.today{outline:2px solid var(--accent-deep);outline-offset:1px}
+.heat-head{display:flex;justify-content:space-between;font-size:11px;color:var(--sub);margin-bottom:8px;min-width:520px}
+.chart-box{height:200px;width:100%}
+.insight{background:var(--accent-soft);border-radius:12px;padding:12px 14px;font-size:13px;color:#7A4A33;margin-top:12px;line-height:1.6}
+.insight b{display:block;margin-bottom:2px}
+
+/* ===== 设置 ===== */
+.set-group{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px 18px;margin-bottom:14px}
+.set-group h3{font-size:14px;font-weight:700;margin-bottom:10px}
+.set-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;font-size:14px}
+.set-row+.set-row{border-top:1px solid var(--line)}
+.set-row .tip{font-size:12px;color:var(--sub)}
+.seg{display:flex;background:var(--bg);border-radius:10px;padding:3px;gap:3px}
+.seg button{font-size:12px;padding:6px 10px;border-radius:8px;color:var(--sub)}
+.seg button.on{background:var(--card);color:var(--ink);font-weight:600;box-shadow:var(--shadow)}
+.btn{display:block;width:100%;background:var(--ink);color:#fff;font-size:14px;font-weight:600;padding:13px;border-radius:14px;margin-top:6px}
+.btn.ghost{background:var(--card);color:var(--ink);box-shadow:var(--shadow)}
+.danger{color:#B0533C}
+input[type=number]{width:64px;border:1px solid var(--line);border-radius:8px;padding:6px 8px;font-size:14px;background:var(--bg);text-align:center}
+
+/* ===== 双端同步 ===== */
+.sync-hero{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px 18px;margin-bottom:14px}
+.sync-hero h3{font-size:15px;font-weight:700;margin-bottom:6px}
+.sync-hero p{font-size:13px;color:var(--sub);line-height:1.7}
+.sync-tip{font-size:12px;color:var(--sub);line-height:1.7;margin-bottom:8px}
+.qr-zone{display:flex;flex-direction:column;align-items:center;gap:12px;padding:12px 0 6px}
+#qrBox{background:#fff;border-radius:12px;padding:10px;border:1px solid var(--line)}
+#syncText{width:100%;box-sizing:border-box;margin-top:10px;border:1px solid var(--line);border-radius:10px;padding:10px;font-size:12px;background:var(--bg);color:var(--ink);resize:vertical;min-height:84px;font-family:ui-monospace,Menlo,monospace}
+.sync-ok{color:#3E7A54;font-weight:600}
+
+/* ===== 底部导航 ===== */
+.tabbar{position:fixed;bottom:0;left:0;right:0;background:rgba(250,247,242,.92);backdrop-filter:blur(12px);border-top:1px solid var(--line);z-index:50}
+.tabbar-inner{max-width:640px;margin:0 auto;display:flex}
+.tab{flex:1;padding:10px 0 12px;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--sub);font-size:11px}
+.tab svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8}
+.tab.on{color:var(--accent-deep)}
+.view{display:none}
+.view.on{display:block;animation:fade .18s ease}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+@media(min-width:700px){
+  .app{padding-top:10px}
+  .task-list,.lib-list{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .hero-card{padding:24px}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+<script>
+/* qrcodejs inlined */
+var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this.parsedData=[];for(var b=[],d=0,e=this.data.length;e>d;d++){var f=this.data.charCodeAt(d);f>65536?(b[0]=240|(1835008&f)>>>18,b[1]=128|(258048&f)>>>12,b[2]=128|(4032&f)>>>6,b[3]=128|63&f):f>2048?(b[0]=224|(61440&f)>>>12,b[1]=128|(4032&f)>>>6,b[2]=128|63&f):f>128?(b[0]=192|(1984&f)>>>6,b[1]=128|63&f):b[0]=f,this.parsedData=this.parsedData.concat(b)}this.parsedData.length!=this.data.length&&(this.parsedData.unshift(191),this.parsedData.unshift(187),this.parsedData.unshift(239))}function b(a,b){this.typeNumber=a,this.errorCorrectLevel=b,this.modules=null,this.moduleCount=0,this.dataCache=null,this.dataList=[]}function i(a,b){if(void 0==a.length)throw new Error(a.length+"/"+b);for(var c=0;c<a.length&&0==a[c];)c++;this.num=new Array(a.length-c+b);for(var d=0;d<a.length-c;d++)this.num[d]=a[d+c]}function j(a,b){this.totalCount=a,this.dataCount=b}function k(){this.buffer=[],this.length=0}function m(){return"undefined"!=typeof CanvasRenderingContext2D}function n(){var a=!1,b=navigator.userAgent;return/android/i.test(b)&&(a=!0,aMat=b.toString().match(/android ([0-9]\.[0-9])/i),aMat&&aMat[1]&&(a=parseFloat(aMat[1]))),a}function r(a,b){for(var c=1,e=s(a),f=0,g=l.length;g>=f;f++){var h=0;switch(b){case d.L:h=l[f][0];break;case d.M:h=l[f][1];break;case d.Q:h=l[f][2];break;case d.H:h=l[f][3]}if(h>=e)break;c++}if(c>l.length)throw new Error("Too long data");return c}function s(a){var b=encodeURI(a).toString().replace(/\%[0-9a-fA-F]{2}/g,"a");return b.length+(b.length!=a?3:0)}a.prototype={getLength:function(){return this.parsedData.length},write:function(a){for(var b=0,c=this.parsedData.length;c>b;b++)a.put(this.parsedData[b],8)}},b.prototype={addData:function(b){var c=new a(b);this.dataList.push(c),this.dataCache=null},isDark:function(a,b){if(0>a||this.moduleCount<=a||0>b||this.moduleCount<=b)throw new Error(a+","+b);return this.modules[a][b]},getModuleCount:function(){return this.moduleCount},make:function(){this.makeImpl(!1,this.getBestMaskPattern())},makeImpl:function(a,c){this.moduleCount=4*this.typeNumber+17,this.modules=new Array(this.moduleCount);for(var d=0;d<this.moduleCount;d++){this.modules[d]=new Array(this.moduleCount);for(var e=0;e<this.moduleCount;e++)this.modules[d][e]=null}this.setupPositionProbePattern(0,0),this.setupPositionProbePattern(this.moduleCount-7,0),this.setupPositionProbePattern(0,this.moduleCount-7),this.setupPositionAdjustPattern(),this.setupTimingPattern(),this.setupTypeInfo(a,c),this.typeNumber>=7&&this.setupTypeNumber(a),null==this.dataCache&&(this.dataCache=b.createData(this.typeNumber,this.errorCorrectLevel,this.dataList)),this.mapData(this.dataCache,c)},setupPositionProbePattern:function(a,b){for(var c=-1;7>=c;c++)if(!(-1>=a+c||this.moduleCount<=a+c))for(var d=-1;7>=d;d++)-1>=b+d||this.moduleCount<=b+d||(this.modules[a+c][b+d]=c>=0&&6>=c&&(0==d||6==d)||d>=0&&6>=d&&(0==c||6==c)||c>=2&&4>=c&&d>=2&&4>=d?!0:!1)},getBestMaskPattern:function(){for(var a=0,b=0,c=0;8>c;c++){this.makeImpl(!0,c);var d=f.getLostPoint(this);(0==c||a>d)&&(a=d,b=c)}return b},createMovieClip:function(a,b,c){var d=a.createEmptyMovieClip(b,c),e=1;this.make();for(var f=0;f<this.modules.length;f++)for(var g=f*e,h=0;h<this.modules[f].length;h++){var i=h*e,j=this.modules[f][h];j&&(d.beginFill(0,100),d.moveTo(i,g),d.lineTo(i+e,g),d.lineTo(i+e,g+e),d.lineTo(i,g+e),d.endFill())}return d},setupTimingPattern:function(){for(var a=8;a<this.moduleCount-8;a++)null==this.modules[a][6]&&(this.modules[a][6]=0==a%2);for(var b=8;b<this.moduleCount-8;b++)null==this.modules[6][b]&&(this.modules[6][b]=0==b%2)},setupPositionAdjustPattern:function(){for(var a=f.getPatternPosition(this.typeNumber),b=0;b<a.length;b++)for(var c=0;c<a.length;c++){var d=a[b],e=a[c];if(null==this.modules[d][e])for(var g=-2;2>=g;g++)for(var h=-2;2>=h;h++)this.modules[d+g][e+h]=-2==g||2==g||-2==h||2==h||0==g&&0==h?!0:!1}},setupTypeNumber:function(a){for(var b=f.getBCHTypeNumber(this.typeNumber),c=0;18>c;c++){var d=!a&&1==(1&b>>c);this.modules[Math.floor(c/3)][c%3+this.moduleCount-8-3]=d}for(var c=0;18>c;c++){var d=!a&&1==(1&b>>c);this.modules[c%3+this.moduleCount-8-3][Math.floor(c/3)]=d}},setupTypeInfo:function(a,b){for(var c=this.errorCorrectLevel<<3|b,d=f.getBCHTypeInfo(c),e=0;15>e;e++){var g=!a&&1==(1&d>>e);6>e?this.modules[e][8]=g:8>e?this.modules[e+1][8]=g:this.modules[this.moduleCount-15+e][8]=g}for(var e=0;15>e;e++){var g=!a&&1==(1&d>>e);8>e?this.modules[8][this.moduleCount-e-1]=g:9>e?this.modules[8][15-e-1+1]=g:this.modules[8][15-e-1]=g}this.modules[this.moduleCount-8][8]=!a},mapData:function(a,b){for(var c=-1,d=this.moduleCount-1,e=7,g=0,h=this.moduleCount-1;h>0;h-=2)for(6==h&&h--;;){for(var i=0;2>i;i++)if(null==this.modules[d][h-i]){var j=!1;g<a.length&&(j=1==(1&a[g]>>>e));var k=f.getMask(b,d,h-i);k&&(j=!j),this.modules[d][h-i]=j,e--,-1==e&&(g++,e=7)}if(d+=c,0>d||this.moduleCount<=d){d-=c,c=-c;break}}}},b.PAD0=236,b.PAD1=17,b.createData=function(a,c,d){for(var e=j.getRSBlocks(a,c),g=new k,h=0;h<d.length;h++){var i=d[h];g.put(i.mode,4),g.put(i.getLength(),f.getLengthInBits(i.mode,a)),i.write(g)}for(var l=0,h=0;h<e.length;h++)l+=e[h].dataCount;if(g.getLengthInBits()>8*l)throw new Error("code length overflow. ("+g.getLengthInBits()+">"+8*l+")");for(g.getLengthInBits()+4<=8*l&&g.put(0,4);0!=g.getLengthInBits()%8;)g.putBit(!1);for(;;){if(g.getLengthInBits()>=8*l)break;if(g.put(b.PAD0,8),g.getLengthInBits()>=8*l)break;g.put(b.PAD1,8)}return b.createBytes(g,e)},b.createBytes=function(a,b){for(var c=0,d=0,e=0,g=new Array(b.length),h=new Array(b.length),j=0;j<b.length;j++){var k=b[j].dataCount,l=b[j].totalCount-k;d=Math.max(d,k),e=Math.max(e,l),g[j]=new Array(k);for(var m=0;m<g[j].length;m++)g[j][m]=255&a.buffer[m+c];c+=k;var n=f.getErrorCorrectPolynomial(l),o=new i(g[j],n.getLength()-1),p=o.mod(n);h[j]=new Array(n.getLength()-1);for(var m=0;m<h[j].length;m++){var q=m+p.getLength()-h[j].length;h[j][m]=q>=0?p.get(q):0}}for(var r=0,m=0;m<b.length;m++)r+=b[m].totalCount;for(var s=new Array(r),t=0,m=0;d>m;m++)for(var j=0;j<b.length;j++)m<g[j].length&&(s[t++]=g[j][m]);for(var m=0;e>m;m++)for(var j=0;j<b.length;j++)m<h[j].length&&(s[t++]=h[j][m]);return s};for(var c={MODE_NUMBER:1,MODE_ALPHA_NUM:2,MODE_8BIT_BYTE:4,MODE_KANJI:8},d={L:1,M:0,Q:3,H:2},e={PATTERN000:0,PATTERN001:1,PATTERN010:2,PATTERN011:3,PATTERN100:4,PATTERN101:5,PATTERN110:6,PATTERN111:7},f={PATTERN_POSITION_TABLE:[[],[6,18],[6,22],[6,26],[6,30],[6,34],[6,22,38],[6,24,42],[6,26,46],[6,28,50],[6,30,54],[6,32,58],[6,34,62],[6,26,46,66],[6,26,48,70],[6,26,50,74],[6,30,54,78],[6,30,56,82],[6,30,58,86],[6,34,62,90],[6,28,50,72,94],[6,26,50,74,98],[6,30,54,78,102],[6,28,54,80,106],[6,32,58,84,110],[6,30,58,86,114],[6,34,62,90,118],[6,26,50,74,98,122],[6,30,54,78,102,126],[6,26,52,78,104,130],[6,30,56,82,108,134],[6,34,60,86,112,138],[6,30,58,86,114,142],[6,34,62,90,118,146],[6,30,54,78,102,126,150],[6,24,50,76,102,128,154],[6,28,54,80,106,132,158],[6,32,58,84,110,136,162],[6,26,54,82,110,138,166],[6,30,58,86,114,142,170]],G15:1335,G18:7973,G15_MASK:21522,getBCHTypeInfo:function(a){for(var b=a<<10;f.getBCHDigit(b)-f.getBCHDigit(f.G15)>=0;)b^=f.G15<<f.getBCHDigit(b)-f.getBCHDigit(f.G15);return(a<<10|b)^f.G15_MASK},getBCHTypeNumber:function(a){for(var b=a<<12;f.getBCHDigit(b)-f.getBCHDigit(f.G18)>=0;)b^=f.G18<<f.getBCHDigit(b)-f.getBCHDigit(f.G18);return a<<12|b},getBCHDigit:function(a){for(var b=0;0!=a;)b++,a>>>=1;return b},getPatternPosition:function(a){return f.PATTERN_POSITION_TABLE[a-1]},getMask:function(a,b,c){switch(a){case e.PATTERN000:return 0==(b+c)%2;case e.PATTERN001:return 0==b%2;case e.PATTERN010:return 0==c%3;case e.PATTERN011:return 0==(b+c)%3;case e.PATTERN100:return 0==(Math.floor(b/2)+Math.floor(c/3))%2;case e.PATTERN101:return 0==b*c%2+b*c%3;case e.PATTERN110:return 0==(b*c%2+b*c%3)%2;case e.PATTERN111:return 0==(b*c%3+(b+c)%2)%2;default:throw new Error("bad maskPattern:"+a)}},getErrorCorrectPolynomial:function(a){for(var b=new i([1],0),c=0;a>c;c++)b=b.multiply(new i([1,g.gexp(c)],0));return b},getLengthInBits:function(a,b){if(b>=1&&10>b)switch(a){case c.MODE_NUMBER:return 10;case c.MODE_ALPHA_NUM:return 9;case c.MODE_8BIT_BYTE:return 8;case c.MODE_KANJI:return 8;default:throw new Error("mode:"+a)}else if(27>b)switch(a){case c.MODE_NUMBER:return 12;case c.MODE_ALPHA_NUM:return 11;case c.MODE_8BIT_BYTE:return 16;case c.MODE_KANJI:return 10;default:throw new Error("mode:"+a)}else{if(!(41>b))throw new Error("type:"+b);switch(a){case c.MODE_NUMBER:return 14;case c.MODE_ALPHA_NUM:return 13;case c.MODE_8BIT_BYTE:return 16;case c.MODE_KANJI:return 12;default:throw new Error("mode:"+a)}}},getLostPoint:function(a){for(var b=a.getModuleCount(),c=0,d=0;b>d;d++)for(var e=0;b>e;e++){for(var f=0,g=a.isDark(d,e),h=-1;1>=h;h++)if(!(0>d+h||d+h>=b))for(var i=-1;1>=i;i++)0>e+i||e+i>=b||(0!=h||0!=i)&&g==a.isDark(d+h,e+i)&&f++;f>5&&(c+=3+f-5)}for(var d=0;b-1>d;d++)for(var e=0;b-1>e;e++){var j=0;a.isDark(d,e)&&j++,a.isDark(d+1,e)&&j++,a.isDark(d,e+1)&&j++,a.isDark(d+1,e+1)&&j++,(0==j||4==j)&&(c+=3)}for(var d=0;b>d;d++)for(var e=0;b-6>e;e++)a.isDark(d,e)&&!a.isDark(d,e+1)&&a.isDark(d,e+2)&&a.isDark(d,e+3)&&a.isDark(d,e+4)&&!a.isDark(d,e+5)&&a.isDark(d,e+6)&&(c+=40);for(var e=0;b>e;e++)for(var d=0;b-6>d;d++)a.isDark(d,e)&&!a.isDark(d+1,e)&&a.isDark(d+2,e)&&a.isDark(d+3,e)&&a.isDark(d+4,e)&&!a.isDark(d+5,e)&&a.isDark(d+6,e)&&(c+=40);for(var k=0,e=0;b>e;e++)for(var d=0;b>d;d++)a.isDark(d,e)&&k++;var l=Math.abs(100*k/b/b-50)/5;return c+=10*l}},g={glog:function(a){if(1>a)throw new Error("glog("+a+")");return g.LOG_TABLE[a]},gexp:function(a){for(;0>a;)a+=255;for(;a>=256;)a-=255;return g.EXP_TABLE[a]},EXP_TABLE:new Array(256),LOG_TABLE:new Array(256)},h=0;8>h;h++)g.EXP_TABLE[h]=1<<h;for(var h=8;256>h;h++)g.EXP_TABLE[h]=g.EXP_TABLE[h-4]^g.EXP_TABLE[h-5]^g.EXP_TABLE[h-6]^g.EXP_TABLE[h-8];for(var h=0;255>h;h++)g.LOG_TABLE[g.EXP_TABLE[h]]=h;i.prototype={get:function(a){return this.num[a]},getLength:function(){return this.num.length},multiply:function(a){for(var b=new Array(this.getLength()+a.getLength()-1),c=0;c<this.getLength();c++)for(var d=0;d<a.getLength();d++)b[c+d]^=g.gexp(g.glog(this.get(c))+g.glog(a.get(d)));return new i(b,0)},mod:function(a){if(this.getLength()-a.getLength()<0)return this;for(var b=g.glog(this.get(0))-g.glog(a.get(0)),c=new Array(this.getLength()),d=0;d<this.getLength();d++)c[d]=this.get(d);for(var d=0;d<a.getLength();d++)c[d]^=g.gexp(g.glog(a.get(d))+b);return new i(c,0).mod(a)}},j.RS_BLOCK_TABLE=[[1,26,19],[1,26,16],[1,26,13],[1,26,9],[1,44,34],[1,44,28],[1,44,22],[1,44,16],[1,70,55],[1,70,44],[2,35,17],[2,35,13],[1,100,80],[2,50,32],[2,50,24],[4,25,9],[1,134,108],[2,67,43],[2,33,15,2,34,16],[2,33,11,2,34,12],[2,86,68],[4,43,27],[4,43,19],[4,43,15],[2,98,78],[4,49,31],[2,32,14,4,33,15],[4,39,13,1,40,14],[2,121,97],[2,60,38,2,61,39],[4,40,18,2,41,19],[4,40,14,2,41,15],[2,146,116],[3,58,36,2,59,37],[4,36,16,4,37,17],[4,36,12,4,37,13],[2,86,68,2,87,69],[4,69,43,1,70,44],[6,43,19,2,44,20],[6,43,15,2,44,16],[4,101,81],[1,80,50,4,81,51],[4,50,22,4,51,23],[3,36,12,8,37,13],[2,116,92,2,117,93],[6,58,36,2,59,37],[4,46,20,6,47,21],[7,42,14,4,43,15],[4,133,107],[8,59,37,1,60,38],[8,44,20,4,45,21],[12,33,11,4,34,12],[3,145,115,1,146,116],[4,64,40,5,65,41],[11,36,16,5,37,17],[11,36,12,5,37,13],[5,109,87,1,110,88],[5,65,41,5,66,42],[5,54,24,7,55,25],[11,36,12],[5,122,98,1,123,99],[7,73,45,3,74,46],[15,43,19,2,44,20],[3,45,15,13,46,16],[1,135,107,5,136,108],[10,74,46,1,75,47],[1,50,22,15,51,23],[2,42,14,17,43,15],[5,150,120,1,151,121],[9,69,43,4,70,44],[17,50,22,1,51,23],[2,42,14,19,43,15],[3,141,113,4,142,114],[3,70,44,11,71,45],[17,47,21,4,48,22],[9,39,13,16,40,14],[3,135,107,5,136,108],[3,67,41,13,68,42],[15,54,24,5,55,25],[15,43,15,10,44,16],[4,144,116,4,145,117],[17,68,42],[17,50,22,6,51,23],[19,46,16,6,47,17],[2,139,111,7,140,112],[17,74,46],[7,54,24,16,55,25],[34,37,13],[4,151,121,5,152,122],[4,75,47,14,76,48],[11,54,24,14,55,25],[16,45,15,14,46,16],[6,147,117,4,148,118],[6,73,45,14,74,46],[11,54,24,16,55,25],[30,46,16,2,47,17],[8,132,106,4,133,107],[8,75,47,13,76,48],[7,54,24,22,55,25],[22,45,15,13,46,16],[10,142,114,2,143,115],[19,74,46,4,75,47],[28,50,22,6,51,23],[33,46,16,4,47,17],[8,152,122,4,153,123],[22,73,45,3,74,46],[8,53,23,26,54,24],[12,45,15,28,46,16],[3,147,117,10,148,118],[3,73,45,23,74,46],[4,54,24,31,55,25],[11,45,15,31,46,16],[7,146,116,7,147,117],[21,73,45,7,74,46],[1,53,23,37,54,24],[19,45,15,26,46,16],[5,145,115,10,146,116],[19,75,47,10,76,48],[15,54,24,25,55,25],[23,45,15,25,46,16],[13,145,115,3,146,116],[2,74,46,29,75,47],[42,54,24,1,55,25],[23,45,15,28,46,16],[17,145,115],[10,74,46,23,75,47],[10,54,24,35,55,25],[19,45,15,35,46,16],[17,145,115,1,146,116],[14,74,46,21,75,47],[29,54,24,19,55,25],[11,45,15,46,46,16],[13,145,115,6,146,116],[14,74,46,23,75,47],[44,54,24,7,55,25],[59,46,16,1,47,17],[12,151,121,7,152,122],[12,75,47,26,76,48],[39,54,24,14,55,25],[22,45,15,41,46,16],[6,151,121,14,152,122],[6,75,47,34,76,48],[46,54,24,10,55,25],[2,45,15,64,46,16],[17,152,122,4,153,123],[29,74,46,14,75,47],[49,54,24,10,55,25],[24,45,15,46,46,16],[4,152,122,18,153,123],[13,74,46,32,75,47],[48,54,24,14,55,25],[42,45,15,32,46,16],[20,147,117,4,148,118],[40,75,47,7,76,48],[43,54,24,22,55,25],[10,45,15,67,46,16],[19,148,118,6,149,119],[18,75,47,31,76,48],[34,54,24,34,55,25],[20,45,15,61,46,16]],j.getRSBlocks=function(a,b){var c=j.getRsBlockTable(a,b);if(void 0==c)throw new Error("bad rs block @ typeNumber:"+a+"/errorCorrectLevel:"+b);for(var d=c.length/3,e=[],f=0;d>f;f++)for(var g=c[3*f+0],h=c[3*f+1],i=c[3*f+2],k=0;g>k;k++)e.push(new j(h,i));return e},j.getRsBlockTable=function(a,b){switch(b){case d.L:return j.RS_BLOCK_TABLE[4*(a-1)+0];case d.M:return j.RS_BLOCK_TABLE[4*(a-1)+1];case d.Q:return j.RS_BLOCK_TABLE[4*(a-1)+2];case d.H:return j.RS_BLOCK_TABLE[4*(a-1)+3];default:return void 0}},k.prototype={get:function(a){var b=Math.floor(a/8);return 1==(1&this.buffer[b]>>>7-a%8)},put:function(a,b){for(var c=0;b>c;c++)this.putBit(1==(1&a>>>b-c-1))},getLengthInBits:function(){return this.length},putBit:function(a){var b=Math.floor(this.length/8);this.buffer.length<=b&&this.buffer.push(0),a&&(this.buffer[b]|=128>>>this.length%8),this.length++}};var l=[[17,14,11,7],[32,26,20,14],[53,42,32,24],[78,62,46,34],[106,84,60,44],[134,106,74,58],[154,122,86,64],[192,152,108,84],[230,180,130,98],[271,213,151,119],[321,251,177,137],[367,287,203,155],[425,331,241,177],[458,362,258,194],[520,412,292,220],[586,450,322,250],[644,504,364,280],[718,560,394,310],[792,624,442,338],[858,666,482,382],[929,711,509,403],[1003,779,565,439],[1091,857,611,461],[1171,911,661,511],[1273,997,715,535],[1367,1059,751,593],[1465,1125,805,625],[1528,1190,868,658],[1628,1264,908,698],[1732,1370,982,742],[1840,1452,1030,790],[1952,1538,1112,842],[2068,1628,1168,898],[2188,1722,1228,958],[2303,1809,1283,983],[2431,1911,1351,1051],[2563,1989,1423,1093],[2699,2099,1499,1139],[2809,2213,1579,1219],[2953,2331,1663,1273]],o=function(){var a=function(a,b){this._el=a,this._htOption=b};return a.prototype.draw=function(a){function g(a,b){var c=document.createElementNS("http://www.w3.org/2000/svg",a);for(var d in b)b.hasOwnProperty(d)&&c.setAttribute(d,b[d]);return c}var b=this._htOption,c=this._el,d=a.getModuleCount();Math.floor(b.width/d),Math.floor(b.height/d),this.clear();var h=g("svg",{viewBox:"0 0 "+String(d)+" "+String(d),width:"100%",height:"100%",fill:b.colorLight});h.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:xlink","http://www.w3.org/1999/xlink"),c.appendChild(h),h.appendChild(g("rect",{fill:b.colorDark,width:"1",height:"1",id:"template"}));for(var i=0;d>i;i++)for(var j=0;d>j;j++)if(a.isDark(i,j)){var k=g("use",{x:String(i),y:String(j)});k.setAttributeNS("http://www.w3.org/1999/xlink","href","#template"),h.appendChild(k)}},a.prototype.clear=function(){for(;this._el.hasChildNodes();)this._el.removeChild(this._el.lastChild)},a}(),p="svg"===document.documentElement.tagName.toLowerCase(),q=p?o:m()?function(){function a(){this._elImage.src=this._elCanvas.toDataURL("image/png"),this._elImage.style.display="block",this._elCanvas.style.display="none"}function d(a,b){var c=this;if(c._fFail=b,c._fSuccess=a,null===c._bSupportDataURI){var d=document.createElement("img"),e=function(){c._bSupportDataURI=!1,c._fFail&&_fFail.call(c)},f=function(){c._bSupportDataURI=!0,c._fSuccess&&c._fSuccess.call(c)};return d.onabort=e,d.onerror=e,d.onload=f,d.src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==",void 0}c._bSupportDataURI===!0&&c._fSuccess?c._fSuccess.call(c):c._bSupportDataURI===!1&&c._fFail&&c._fFail.call(c)}if(this._android&&this._android<=2.1){var b=1/window.devicePixelRatio,c=CanvasRenderingContext2D.prototype.drawImage;CanvasRenderingContext2D.prototype.drawImage=function(a,d,e,f,g,h,i,j){if("nodeName"in a&&/img/i.test(a.nodeName))for(var l=arguments.length-1;l>=1;l--)arguments[l]=arguments[l]*b;else"undefined"==typeof j&&(arguments[1]*=b,arguments[2]*=b,arguments[3]*=b,arguments[4]*=b);c.apply(this,arguments)}}var e=function(a,b){this._bIsPainted=!1,this._android=n(),this._htOption=b,this._elCanvas=document.createElement("canvas"),this._elCanvas.width=b.width,this._elCanvas.height=b.height,a.appendChild(this._elCanvas),this._el=a,this._oContext=this._elCanvas.getContext("2d"),this._bIsPainted=!1,this._elImage=document.createElement("img"),this._elImage.style.display="none",this._el.appendChild(this._elImage),this._bSupportDataURI=null};return e.prototype.draw=function(a){var b=this._elImage,c=this._oContext,d=this._htOption,e=a.getModuleCount(),f=d.width/e,g=d.height/e,h=Math.round(f),i=Math.round(g);b.style.display="none",this.clear();for(var j=0;e>j;j++)for(var k=0;e>k;k++){var l=a.isDark(j,k),m=k*f,n=j*g;c.strokeStyle=l?d.colorDark:d.colorLight,c.lineWidth=1,c.fillStyle=l?d.colorDark:d.colorLight,c.fillRect(m,n,f,g),c.strokeRect(Math.floor(m)+.5,Math.floor(n)+.5,h,i),c.strokeRect(Math.ceil(m)-.5,Math.ceil(n)-.5,h,i)}this._bIsPainted=!0},e.prototype.makeImage=function(){this._bIsPainted&&d.call(this,a)},e.prototype.isPainted=function(){return this._bIsPainted},e.prototype.clear=function(){this._oContext.clearRect(0,0,this._elCanvas.width,this._elCanvas.height),this._bIsPainted=!1},e.prototype.round=function(a){return a?Math.floor(1e3*a)/1e3:a},e}():function(){var a=function(a,b){this._el=a,this._htOption=b};return a.prototype.draw=function(a){for(var b=this._htOption,c=this._el,d=a.getModuleCount(),e=Math.floor(b.width/d),f=Math.floor(b.height/d),g=['<table style="border:0;border-collapse:collapse;">'],h=0;d>h;h++){g.push("<tr>");for(var i=0;d>i;i++)g.push('<td style="border:0;border-collapse:collapse;padding:0;margin:0;width:'+e+"px;height:"+f+"px;background-color:"+(a.isDark(h,i)?b.colorDark:b.colorLight)+';"></td>');g.push("</tr>")}g.push("</table>"),c.innerHTML=g.join("");var j=c.childNodes[0],k=(b.width-j.offsetWidth)/2,l=(b.height-j.offsetHeight)/2;k>0&&l>0&&(j.style.margin=l+"px "+k+"px")},a.prototype.clear=function(){this._el.innerHTML=""},a}();QRCode=function(a,b){if(this._htOption={width:256,height:256,typeNumber:4,colorDark:"#000000",colorLight:"#ffffff",correctLevel:d.H},"string"==typeof b&&(b={text:b}),b)for(var c in b)this._htOption[c]=b[c];"string"==typeof a&&(a=document.getElementById(a)),this._android=n(),this._el=a,this._oQRCode=null,this._oDrawing=new q(this._el,this._htOption),this._htOption.text&&this.makeCode(this._htOption.text)},QRCode.prototype.makeCode=function(a){this._oQRCode=new b(r(a,this._htOption.correctLevel),this._htOption.correctLevel),this._oQRCode.addData(a),this._oQRCode.make(),this._el.title=a,this._oDrawing.draw(this._oQRCode),this.makeImage()},QRCode.prototype.makeImage=function(){"function"==typeof this._oDrawing.makeImage&&(!this._android||this._android>=3)&&this._oDrawing.makeImage()},QRCode.prototype.clear=function(){this._oDrawing.clear()},QRCode.CorrectLevel=d}();
+</script>
+</head>
+<body>
+<div class="app" id="app">
+  <!-- 顶栏 -->
+  <header class="topbar">
+    <div class="brand"><span class="dot"></span>摸鱼自我提升</div>
+    <div class="top-right"><span class="week-pill" id="weekPill"></span></div>
+  </header>
+
+  <!-- ===== 视图：今日 ===== -->
+  <main class="view on" id="view-today">
+    <div class="date-line" id="dateLine"></div>
+    <div class="greeting" id="greeting"></div>
+    <div class="hero-card">
+      <div class="ring" id="todayRing">
+        <svg viewBox="0 0 92 92" width="92" height="92">
+          <circle cx="46" cy="46" r="40" fill="none" stroke="var(--line)" stroke-width="9"/>
+          <circle id="ringArc" cx="46" cy="46" r="40" fill="none" stroke="var(--accent)" stroke-width="9" stroke-linecap="round" stroke-dasharray="251.2" stroke-dashoffset="251.2"/>
+        </svg>
+        <div class="num"><b id="ringNum">0</b><span>已完成</span></div>
+      </div>
+      <div class="hero-info">
+        <div class="h1" id="todayCount">今天 0 / 0 项</div>
+        <div class="h2" id="todayHint">选几条小事，填满摸鱼时间</div>
+        <div class="streak">
+          <div class="item hot"><b id="sDays">0</b><span>连续打卡</span></div>
+          <div class="item"><b id="sRate">0%</b><span>本周完成率</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="suggest" id="suggestBox" style="display:none">
+      <span>灵感：<b id="suggestText"></b></span>
+      <button id="suggestBtn">换一条</button>
+    </div>
+    <div class="section-title"><h2>今日清单</h2><span id="taskCount"></span></div>
+    <div class="task-list" id="todayList"></div>
+  </main>
+
+  <!-- ===== 视图：清单库 ===== -->
+  <main class="view" id="view-lib">
+    <div class="cats" id="catChips"></div>
+    <div class="search">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+      <input id="searchInput" type="text" placeholder="搜索碎片任务…" autocomplete="off">
+    </div>
+    <div class="lib-list" id="libList"></div>
+  </main>
+
+  <!-- ===== 视图：统计 ===== -->
+  <main class="view" id="view-stats">
+    <div class="stat-card">
+      <h3>月度打卡热力图</h3>
+      <div class="sub">颜色越深，那天完成越多；今天有描边标记</div>
+      <div class="heat-wrap">
+        <div class="heat-head"><span id="heatMonth"></span><span id="heatTotal"></span></div>
+        <div class="heat" id="heatGrid"></div>
+      </div>
+      <div class="insight" id="insightBox"><b>豆点观察</b><span id="insightText">打卡几天后，这里会给你一点小提醒。</span></div>
+    </div>
+    <div class="stat-card">
+      <h3>本周完成趋势</h3>
+      <div class="sub" id="weekSub"></div>
+      <div class="chart-box" id="weekChart"></div>
+    </div>
+    <div class="stat-card">
+      <h3>分类打卡分布</h3>
+      <div class="sub">看看你把碎片时间花在了哪</div>
+      <div class="chart-box" id="catChart"></div>
+    </div>
+  </main>
+
+  <!-- ===== 视图：设置 ===== -->
+  <main class="view" id="view-set">
+    <div class="set-group">
+      <h3>每日目标</h3>
+      <div class="set-row"><span>每日任务数</span><input type="number" id="goalInput" min="1" max="30" value="5"></div>
+      <div class="set-row"><span>连续打卡豁免</span><span class="tip">每周自动给 1 天喘息</span></div>
+    </div>
+    <div class="set-group">
+      <h3>提醒方式</h3>
+      <div class="set-row"><span>提醒强度</span>
+        <div class="seg" id="remindSeg">
+          <button data-v="0">不提醒</button>
+          <button data-v="1">温和提醒</button>
+          <button data-v="2">强提醒</button>
+        </div>
+      </div>
+      <div class="set-row"><span>每日提醒时间</span><input type="number" id="remindHour" min="0" max="23" value="19"><span class="tip">点</span></div>
+      <p style="font-size:12px;color:var(--sub);margin-top:8px">强提醒：到点后未完成的任务会推送通知提醒你；温和提醒：每天汇总一次；不提醒：只在打开时看到。</p>
+    </div>
+    <div class="set-group">
+      <h3>数据</h3>
+      <button class="btn ghost" id="exportBtn">导出数据备份（JSON）</button>
+      <button class="btn ghost" id="importBtn" style="margin-top:10px">导入数据备份</button>
+      <input type="file" id="importFile" accept=".json" style="display:none">
+      <button class="btn danger" id="resetBtn" style="margin-top:10px">清空全部数据</button>
+    </div>
+    <div class="set-group">
+      <h3>关于</h3>
+      <p style="font-size:13px;color:var(--sub);line-height:1.7">这是用豆老师电脑（工作模式）一步步搭出来的碎片时间提升小工具：12 类 120 条灵感清单、每日打卡、月度热力图。数据先存在你自己的设备里，可以导出备份，也可以用「同步」页搬到手机或电脑。</p>
+    </div>
+  </main>
+
+  <!-- ===== 视图：同步 ===== -->
+  <main class="view" id="view-sync">
+    <div class="sync-hero">
+      <h3>双端同步</h3>
+      <p>手机和电脑打开同一个页面（部署后的网址），在任意一端打卡，用下面任一方式把数据同步过去。合并时两边的打卡都会保留，不会互相覆盖。</p>
+    </div>
+    <div class="set-group">
+      <h3>扫码同步（电脑 → 手机，推荐）</h3>
+      <p class="sync-tip">在电脑上点「生成同步二维码」，用手机相机扫一扫，会自动打开本页面并合并数据。</p>
+      <div class="qr-zone" id="qrZone">
+        <div id="qrBox"></div>
+        <button class="btn" id="qrBtn">生成同步二维码</button>
+      </div>
+      <p class="sync-tip" id="qrNote" style="display:none">当前是本地文件模式（file://），无法生成可扫码打开的链接，请改用下方「复制 / 粘贴同步」。</p>
+    </div>
+    <div class="set-group">
+      <h3>复制 / 粘贴同步（双向通用）</h3>
+      <p class="sync-tip">电脑：点「复制同步文本」→ 用微信/QQ 发给自己 → 手机打开本页面粘贴 → 点「合并数据」。手机传回电脑同理，两边方向都支持。</p>
+      <button class="btn" id="copySyncBtn">复制同步文本</button>
+      <textarea id="syncText" rows="4" placeholder="在这里粘贴另一台设备的同步文本…"></textarea>
+      <button class="btn ghost" id="mergeSyncBtn" style="margin-top:10px">合并数据</button>
+    </div>
+    <div class="set-group">
+      <h3>同步说明</h3>
+      <p class="sync-tip">合并时已完成的打卡两边都保留（取并集）；每日任务清单也取并集；每日目标与提醒设置以最后修改的一方为准。</p>
+      <p class="sync-tip" id="syncTsTip">还没有同步过</p>
+    </div>
+  </main>
+</div>
+
+<!-- 底部导航 -->
+<nav class="tabbar"><div class="tabbar-inner" id="tabbar">
+  <button class="tab on" data-v="today"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>今日</button>
+  <button class="tab" data-v="lib"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg>清单库</button>
+  <button class="tab" data-v="stats"><svg viewBox="0 0 24 24"><path d="M4 19V10M10 19V5M16 19v-7M22 19H2"/></svg>统计</button>
+  <button class="tab" data-v="sync"><svg viewBox="0 0 24 24"><path d="M17 2l4 4-4 4M21 6H8M7 22l-4-4 4-4M3 18h13"/></svg>同步</button>
+  <button class="tab" data-v="set"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.6-2-3.4-2.4 1a7 7 0 0 0-2-1.2L14 3h-4l-.5 2.6a7 7 0 0 0-2 1.2l-2.4-1-2 3.4 2 1.6a7 7 0 0 0 0 2.4l-2 1.6 2 3.4 2.4-1a7 7 0 0 0 2 1.2L10 21h4l.5-2.6a7 7 0 0 0 2-1.2l2.4 1 2-3.4-2-1.6c.07-.4.1-.8.1-1.2z"/></svg>设置</button>
+</div></nav>
+
+<script>
+/* ===== 数据：12 类 120 条灵感清单 ===== */
+var CATS = [
+  {id:"diet",name:"饮食管理",color:"#8FA98F"},
+  {id:"move",name:"工位微运动",color:"#8FA8C8"},
+  {id:"mood",name:"情绪管理",color:"#D9A5A0"},
+  {id:"learn",name:"学习充电",color:"#C9A86A"},
+  {id:"money",name:"理财记账",color:"#B39BC8"},
+  {id:"work",name:"职场成长",color:"#7FA8A0"},
+  {id:"health",name:"健康作息",color:"#D4A56E"},
+  {id:"hobby",name:"兴趣创造",color:"#C8918F"},
+  {id:"social",name:"社交关系",color:"#9BA6C8"},
+  {id:"reflect",name:"复盘反思",color:"#8FA6B8"},
+  {id:"tidy",name:"整理断舍离",color:"#A5A08A"},
+  {id:"rest",name:"放松恢复",color:"#BFA87E"}
+];
+var TASKS = [
+{id:"d1",c:"diet",n:"吃够 5 种颜色的蔬果"},
+{id:"d2",c:"diet",n:"喝够 8 杯水（记录）"},
+{id:"d3",c:"diet",n:"加一份蛋白质（蛋/豆/奶）"},
+{id:"d4",c:"diet",n:"吃一份完整水果"},
+{id:"d5",c:"diet",n:"饭前喝一杯温水"},
+{id:"d6",c:"diet",n:"记录今日一餐"},
+{id:"d7",c:"diet",n:"用无糖饮品替代含糖饮料"},
+{id:"d8",c:"diet",n:"吃一小把坚果"},
+{id:"d9",c:"diet",n:"午餐加一份绿叶菜"},
+{id:"d10",c:"diet",n:"细嚼慢咽吃完一顿饭"},
+{id:"m1",c:"move",n:"提踵 20 次"},
+{id:"m2",c:"move",n:"提肛（凯格尔）10 组"},
+{id:"m3",c:"move",n:"靠墙静蹲 60 秒"},
+{id:"m4",c:"move",n:"肩部绕环 30 秒"},
+{id:"m5",c:"move",n:"颈部左右拉伸"},
+{id:"m6",c:"move",n:"扩胸开肩 10 次"},
+{id:"m7",c:"move",n:"手腕放松绕环"},
+{id:"m8",c:"move",n:"眼保健操一套"},
+{id:"m9",c:"move",n:"踮脚尖走几步"},
+{id:"m10",c:"move",n:"工位深蹲 10 个"},
+{id:"e1",c:"mood",n:"写下 3 件感恩小事"},
+{id:"e2",c:"mood",n:"情绪日记写一句话"},
+{id:"e3",c:"mood",n:"3 分钟正念呼吸"},
+{id:"e4",c:"mood",n:"4-7-8 深呼吸 1 分钟"},
+{id:"e5",c:"mood",n:"听一首喜欢的歌"},
+{id:"e6",c:"mood",n:"给自己一句积极暗示"},
+{id:"e7",c:"mood",n:"写下烦恼并划掉一件可控的"},
+{id:"e8",c:"mood",n:"暂停 5 秒再回应消息"},
+{id:"e9",c:"mood",n:"微笑练习 30 秒"},
+{id:"e10",c:"mood",n:"给此刻情绪命名"},
+{id:"l1",c:"learn",n:"多邻国打卡"},
+{id:"l2",c:"learn",n:"背 10 个英语单词"},
+{id:"l3",c:"learn",n:"读 10 页书"},
+{id:"l4",c:"learn",n:"听一节播客"},
+{id:"l5",c:"learn",n:"看一篇行业文章"},
+{id:"l6",c:"learn",n:"学 1 个新概念并复述"},
+{id:"l7",c:"learn",n:"刷 10 道题/错题"},
+{id:"l8",c:"learn",n:"看一段 TED 演讲"},
+{id:"l9",c:"learn",n:"写 100 字学习笔记"},
+{id:"l10",c:"learn",n:"练 15 分钟新技能"},
+{id:"f1",c:"money",n:"记一笔今日支出"},
+{id:"f2",c:"money",n:"核对本周账单"},
+{id:"f3",c:"money",n:"定投一笔（基金/储蓄）"},
+{id:"f4",c:"money",n:"转存 10 元到梦想账户"},
+{id:"f5",c:"money",n:"取消一笔非必要订阅"},
+{id:"f6",c:"money",n:"看 1 篇理财科普"},
+{id:"f7",c:"money",n:"检查本月预算余量"},
+{id:"f8",c:"money",n:"给还款日设日历提醒"},
+{id:"f9",c:"money",n:"盘点一件闲置资产"},
+{id:"f10",c:"money",n:"写一句本周消费复盘"},
+{id:"w1",c:"work",n:"复盘当日工作 3 条"},
+{id:"w2",c:"work",n:"写明日待办清单"},
+{id:"w3",c:"work",n:"整理电脑桌面/文件夹"},
+{id:"w4",c:"work",n:"攒一条周报素材"},
+{id:"w5",c:"work",n:"给同事一条有用反馈"},
+{id:"w6",c:"work",n:"学一个职场技能点"},
+{id:"w7",c:"work",n:"更新一条人脉备注"},
+{id:"w8",c:"work",n:"读一条岗位相关 JD"},
+{id:"w9",c:"work",n:"记录一次会议要点"},
+{id:"w10",c:"work",n:"发一条进展同步"},
+{id:"h1",c:"health",n:"23 点前放下手机"},
+{id:"h2",c:"health",n:"午休闭眼 20 分钟"},
+{id:"h3",c:"health",n:"记录睡眠时长"},
+{id:"h4",c:"health",n:"睡前 1 小时不进食"},
+{id:"h5",c:"health",n:"晒 10 分钟太阳"},
+{id:"h6",c:"health",n:"吃今日维生素/补剂"},
+{id:"h7",c:"health",n:"每小时起身活动 1 次"},
+{id:"h8",c:"health",n:"22:30 前入睡打卡"},
+{id:"h9",c:"health",n:"睡前拉伸 5 分钟"},
+{id:"h10",c:"health",n:"晨起喝一杯温水并记录"},
+{id:"i1",c:"hobby",n:"画一幅小涂鸦"},
+{id:"i2",c:"hobby",n:"写一段心情日记"},
+{id:"i3",c:"hobby",n:"拍一张今日照片"},
+{id:"i4",c:"hobby",n:"练 10 分钟字"},
+{id:"i5",c:"hobby",n:"学一首歌的副歌"},
+{id:"i6",c:"hobby",n:"做一个小手工"},
+{id:"i7",c:"hobby",n:"记录一个灵感点子"},
+{id:"i8",c:"hobby",n:"整理手机相册 10 张"},
+{id:"i9",c:"hobby",n:"学一个摄影构图技巧"},
+{id:"i10",c:"hobby",n:"发一条原创社交媒体内容"},
+{id:"s1",c:"social",n:"给家人发一条消息"},
+{id:"s2",c:"social",n:"给朋友点赞评论"},
+{id:"s3",c:"social",n:"主动邀约一个人吃饭/散步"},
+{id:"s4",c:"social",n:"给帮助过你的人道谢"},
+{id:"s5",c:"social",n:"专注听人说完一次"},
+{id:"s6",c:"social",n:"记录一个朋友生日"},
+{id:"s7",c:"social",n:"整理通讯录加备注"},
+{id:"s8",c:"social",n:"发一条问候"},
+{id:"s9",c:"social",n:"参加一次线下活动"},
+{id:"s10",c:"social",n:"与人深度对话一次"},
+{id:"r1",c:"reflect",n:"写今日复盘 3 行"},
+{id:"r2",c:"reflect",n:"记录今日 1 件成就"},
+{id:"r3",c:"reflect",n:"记录 1 个改进点"},
+{id:"r4",c:"reflect",n:"周复盘：目标 vs 实际"},
+{id:"r5",c:"reflect",n:"回顾月度目标进度"},
+{id:"r6",c:"reflect",n:"感恩复盘 3 条"},
+{id:"r7",c:"reflect",n:"复盘一次情绪事件"},
+{id:"r8",c:"reflect",n:"记录半小时段的时间去向"},
+{id:"r9",c:"reflect",n:"自评本周习惯坚持度"},
+{id:"r10",c:"reflect",n:"把长期目标拆到本周"},
+{id:"t1",c:"tidy",n:"清理桌面杂物"},
+{id:"t2",c:"tidy",n:"归档 10 封邮件"},
+{id:"t3",c:"tidy",n:"删除 50 张无用照片"},
+{id:"t4",c:"tidy",n:"整理一个抽屉/柜格"},
+{id:"t5",c:"tidy",n:"清理微信缓存/群消息"},
+{id:"t6",c:"tidy",n:"卸载一个无用 App"},
+{id:"t7",c:"tidy",n:"整理收藏夹/书签"},
+{id:"t8",c:"tidy",n:"清理电脑下载文件夹"},
+{id:"t9",c:"tidy",n:"捐或扔一件闲置"},
+{id:"t10",c:"tidy",n:"给物品分类归位"},
+{id:"p1",c:"rest",n:"远眺绿植 60 秒"},
+{id:"p2",c:"rest",n:"闭目养神 5 分钟"},
+{id:"p3",c:"rest",n:"听一段白噪音/自然音"},
+{id:"p4",c:"rest",n:"泡一杯茶慢慢喝"},
+{id:"p5",c:"rest",n:"做 3 次深呼吸伸展"},
+{id:"p6",c:"rest",n:"揉按太阳穴/头皮"},
+{id:"p7",c:"rest",n:"起身散步 5 分钟"},
+{id:"p8",c:"rest",n:"发呆放空 2 分钟"},
+{id:"p9",c:"rest",n:"拉伸颈肩腰"},
+{id:"p10",c:"rest",n:"睡前听轻音乐 10 分钟"}
+];
+/* ===== 状态管理 ===== */
+var LS_KEY = "moyu-app-v1";
+function loadState(){
+  try{
+    var s = JSON.parse(localStorage.getItem(LS_KEY) || "{}");
+    if(!s.records) s.records = {};        // { "2026-10-01": ["d1","m3"] }
+    if(!s.goal) s.goal = 5;
+    if(!s.remind) s.remind = 1;           // 0 不提醒 1 温和 2 强
+    if(!s.remindHour) s.remindHour = 19;
+    if(!s.today) s.today = {};            // 当日待办 { "d1":true }
+    if(!s.fav) s.fav = [];
+    if(!s.syncTs) s.syncTs = 0;           // 上次同步时间戳
+    return s;
+  }catch(e){ return {records:{},goal:5,remind:1,remindHour:19,today:{},fav:[],syncTs:0}; }
+}
+var state = loadState();
+function save(){ localStorage.setItem(LS_KEY, JSON.stringify(state)); }
+
+/* ===== 日期工具 ===== */
+function fmtDate(d){ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+function todayStr(){ return fmtDate(new Date()); }
+var WEEK = ["日","一","二","三","四","五","六"];
+function catById(id){ for(var i=0;i<CATS.length;i++) if(CATS[i].id===id) return CATS[i]; return {name:"其他",color:"#999"}; }
+function taskById(id){ for(var i=0;i<TASKS.length;i++) if(TASKS[i].id===id) return TASKS[i]; return null; }
+
+/* ===== 视图路由 ===== */
+function switchView(v){
+  var views = ["today","lib","stats","sync","set"];
+  for(var i=0;i<views.length;i++){
+    document.getElementById("view-"+views[i]).classList.toggle("on", views[i]===v);
+  }
+  var tabs = document.querySelectorAll("#tabbar .tab");
+  for(var j=0;j<tabs.length;j++) tabs[j].classList.toggle("on", tabs[j].getAttribute("data-v")===v);
+  if(v==="stats") renderStats();
+  if(v==="lib") renderLib();
+  if(v==="set") renderSet();
+  if(v==="sync") renderSync();
+  window.scrollTo(0,0);
+}
+document.getElementById("tabbar").addEventListener("click", function(e){
+  var t = e.target.closest ? e.target.closest(".tab") : null;
+  if(t) switchView(t.getAttribute("data-v"));
+});
+
+/* ===== 顶部信息 ===== */
+function renderTop(){
+  var d = new Date();
+  document.getElementById("dateLine").textContent = d.getFullYear()+"年"+(d.getMonth()+1)+"月"+d.getDate()+"日 · 周"+WEEK[d.getDay()];
+  document.getElementById("weekPill").textContent = "第 "+weekOfYear(d)+" 周";
+  var h = d.getHours();
+  var g = "";
+  if(h<6) g="夜深了，别熬太狠";
+  else if(h<9) g="早安，今天也偷偷变强";
+  else if(h<12) g="上午好，摸鱼也能攒出成长";
+  else if(h<14) g="午休片刻，给下午充电";
+  else if(h<18) g="下午好，碎片时间别浪费";
+  else if(h<22) g="晚上好，把今天补个圆满";
+  else g="早点休息，明天继续";
+  document.getElementById("greeting").textContent = g;
+}
+function weekOfYear(d){
+  var one = new Date(d.getFullYear(),0,1);
+  return Math.ceil((((d-one)/86400000)+one.getDay()+1)/7);
+}
+
+/* ===== 今日清单 ===== */
+function ensureToday(){
+  var t = todayStr();
+  if(!state.records[t]){
+    // 首次打开：自动挑几条默认任务
+    var pool = ["d1","m3","l2","p4","r1","m8","l5"];
+    var picked = [];
+    for(var i=0;i<state.goal && i<pool.length;i++) picked.push(pool[i]);
+    state.today = {};
+    for(var j=0;j<picked.length;j++) state.today[picked[j]] = false;
+  } else {
+    // 保留未完成任务到当天
+    var prev = state.records[t];
+    var kept = {};
+    for(var k in state.today){
+      if(prev.indexOf(k) === -1) kept[k] = false;
+    }
+    state.today = kept;
+  }
+  save();
+}
+function todayDone(){
+  var t = todayStr();
+  return state.records[t] || [];
+}
+function renderToday(){
+  var t = todayStr();
+  var done = todayDone();
+  var list = [];
+  for(var k in state.today) list.push(k);
+  var doneCount = 0;
+  for(var i=0;i<done.length;i++) if(state.today[done[i]]===false || state.today[done[i]]===undefined) doneCount++;
+  // 兼容：今日已完成集合里已完成的
+  var total = list.length;
+  document.getElementById("todayCount").textContent = "今天 "+doneCount+" / "+total+" 项";
+  document.getElementById("taskCount").textContent = total+" 项 · 点击打卡";
+  var pct = total ? Math.round(doneCount/total*100) : 0;
+  document.getElementById("ringNum").textContent = doneCount;
+  var arc = document.getElementById("ringArc");
+  var off = 251.2 * (1 - pct/100);
+  arc.setAttribute("stroke-dashoffset", off);
+  var hint = "";
+  if(total===0) hint = "去清单库挑几件想做的事吧";
+  else if(pct===100) hint = "全完成，今天摸鱼摸出了成果";
+  else if(pct>=60) hint = "很棒，再点几件就圆满了";
+  else hint = "选几条小事，填满摸鱼时间";
+  document.getElementById("todayHint").textContent = hint;
+  // 连续天数 & 周完成率
+  document.getElementById("sDays").textContent = streakDays();
+  document.getElementById("sRate").textContent = weekRate()+"%";
+  // 清单渲染
+  var wrap = document.getElementById("todayList");
+  if(total===0){
+    wrap.innerHTML = '<div class="empty"><b>今天还没有任务</b>去「清单库」挑几件想做的事</div>';
+    return;
+  }
+  var html = "";
+  for(var j=0;j<list.length;j++){
+    var tk = taskById(list[j]);
+    if(!tk) continue;
+    var isDone = done.indexOf(list[j]) !== -1;
+    html += taskHTML(list[j], tk, isDone);
+  }
+  wrap.innerHTML = html;
+  // 灵感推荐
+  var sb = document.getElementById("suggestBox");
+  sb.style.display = "flex";
+  document.getElementById("suggestText").textContent = randomSuggest(list);
+}
+function taskHTML(id, tk, isDone){
+  var c = catById(tk.c);
+  return '<div class="task'+(isDone?" done":"")+'" data-id="'+id+'">'+
+    '<div class="check"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg></div>'+
+    '<div class="t-main"><div class="t-name">'+tk.n+'</div><div class="t-cat"><span class="cat-dot" style="background:'+c.color+'"></span>'+c.name+'</div></div>'+
+    '<div class="t-time">约 3–15 分钟</div></div>';
+}
+document.getElementById("todayList").addEventListener("click", function(e){
+  var card = e.target.closest ? e.target.closest(".task") : null;
+  if(!card) return;
+  var id = card.getAttribute("data-id");
+  var t = todayStr();
+  var done = state.records[t] || [];
+  var idx = done.indexOf(id);
+  if(idx === -1) done.push(id); else done.splice(idx,1);
+  state.records[t] = done;
+  save();
+  renderToday();
+});
+
+/* ===== 灵感推荐 ===== */
+function randomSuggest(exclude){
+  var pool = [];
+  for(var i=0;i<TASKS.length;i++){
+    if(exclude && exclude.indexOf(TASKS[i].id)!==-1) continue;
+    pool.push(TASKS[i]);
+  }
+  if(!pool.length) return "今天已经很充实了";
+  var pick = pool[Math.floor(Math.random()*pool.length)];
+  return "「"+pick.n+"」";
+}
+document.getElementById("suggestBtn").addEventListener("click", function(){
+  var list = []; for(var k in state.today) list.push(k);
+  document.getElementById("suggestText").textContent = randomSuggest(list);
+});
+
+/* ===== 清单库 ===== */
+var libCat = "all";
+var libKw = "";
+function renderCatChips(){
+  var html = '<button class="cat-chip on" data-c="all">全部 120</button>';
+  for(var i=0;i<CATS.length;i++){
+    html += '<button class="cat-chip" data-c="'+CATS[i].id+'">'+CATS[i].name+'</button>';
+  }
+  document.getElementById("catChips").innerHTML = html;
+}
+document.getElementById("catChips").addEventListener("click", function(e){
+  var chip = e.target.closest ? e.target.closest(".cat-chip") : null;
+  if(!chip) return;
+  libCat = chip.getAttribute("data-c");
+  var chips = document.querySelectorAll(".cat-chip");
+  for(var i=0;i<chips.length;i++) chips[i].classList.toggle("on", chips[i]===chip);
+  renderLib();
+});
+document.getElementById("searchInput").addEventListener("input", function(e){
+  libKw = e.target.value.trim();
+  renderLib();
+});
+function renderLib(){
+  var html = "";
+  var count = 0;
+  for(var i=0;i<TASKS.length;i++){
+    var tk = TASKS[i];
+    if(libCat!=="all" && tk.c!==libCat) continue;
+    if(libKw && tk.n.indexOf(libKw)===-1) continue;
+    count++;
+    var inToday = state.today[tk.id] !== undefined;
+    var c = catById(tk.c);
+    html += '<div class="lib-item" data-id="'+tk.id+'">'+
+      '<span class="cat-dot" style="background:'+c.color+';flex:none"></span>'+
+      '<span class="nm">'+tk.n+'</span>'+
+      '<button class="add'+(inToday?" on":"")+'" data-id="'+tk.id+'"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>'+
+      '</div>';
+  }
+  document.getElementById("libList").innerHTML = html || '<div class="empty"><b>没有找到</b>换个关键词试试</div>';
+}
+document.getElementById("libList").addEventListener("click", function(e){
+  var btn = e.target.closest ? e.target.closest(".add") : null;
+  if(!btn) return;
+  var id = btn.getAttribute("data-id");
+  if(state.today[id] !== undefined){
+    delete state.today[id];
+  } else {
+    state.today[id] = false;
+  }
+  save();
+  renderLib();
+  toast(state.today[id]!==undefined ? "已加入今日清单" : "已移出今日清单");
+});
+
+/* ===== 统计 ===== */
+function streakDays(){
+  var days = 0;
+  var d = new Date();
+  for(;;){
+    var ds = fmtDate(d);
+    var rec = state.records[ds];
+    if(rec && rec.length) days++; else break;
+    d.setDate(d.getDate()-1);
+    if(days>3650) break;
+  }
+  return days;
+}
+function weekRate(){
+  var now = new Date();
+  var dow = now.getDay() || 7;
+  var monday = new Date(now); monday.setDate(now.getDate()-dow+1);
+  var total = 0, done = 0;
+  for(var i=0;i<7;i++){
+    var d = new Date(monday); d.setDate(monday.getDate()+i);
+    var ds = fmtDate(d);
+    var dayTasks = countTasks(ds);
+    total += dayTasks;
+    var rec = state.records[ds];
+    if(rec) done += Math.min(rec.length, dayTasks);
+  }
+  return total ? Math.round(done/total*100) : 0;
+}
+function countTasks(ds){
+  if(ds===todayStr()){ var n=0; for(var k in state.today) n++; return n; }
+  return 5; // 过去日期按当日目标估算
+}
+function renderStats(){
+  renderHeat();
+  renderWeekChart();
+  renderCatChart();
+  renderInsight();
+}
+function renderHeat(){
+  var now = new Date();
+  var y = now.getFullYear(), m = now.getMonth();
+  var daysInMonth = new Date(y, m+1, 0).getDate();
+  var firstDow = new Date(y, m, 1).getDay(); // 0=周日
+  var tstr = todayStr();
+  var html = "";
+  var total = 0, active = 0;
+  for(var day=1; day<=daysInMonth; day++){
+    var d = new Date(y, m, day);
+    var ds = fmtDate(d);
+    var rec = state.records[ds];
+    var cnt = rec ? rec.length : 0;
+    var today = ds===tstr;
+    var lv = 0;
+    if(cnt>0){ total++; active++; }
+    if(cnt>=5) lv=4; else if(cnt>=3) lv=3; else if(cnt>=2) lv=2; else if(cnt>=1) lv=1;
+    html += '<div class="cell'+(lv?(" l"+lv):"")+(today?" today":"")+'" title="'+ds+' 完成 '+cnt+' 项"></div>';
+  }
+  document.getElementById("heatMonth").textContent = y+"年"+(m+1)+"月";
+  document.getElementById("heatTotal").textContent = active+" 天有打卡";
+  document.getElementById("heatGrid").innerHTML = html;
+}
+function renderWeekChart(){
+  var el = document.getElementById("weekChart");
+  if(typeof echarts === "undefined"){ el.innerHTML = ""; return; }
+  var chart = echarts.getInstanceByDom(el) || echarts.init(el);
+  var now = new Date();
+  var dow = now.getDay() || 7;
+  var monday = new Date(now); monday.setDate(now.getDate()-dow+1);
+  var days = [], vals = [];
+  for(var i=0;i<7;i++){
+    var d = new Date(monday); d.setDate(monday.getDate()+i);
+    days.push("周"+"日一二三四五六".charAt(d.getDay()));
+    var rec = state.records[fmtDate(d)];
+    vals.push(rec ? rec.length : 0);
+  }
+  document.getElementById("weekSub").textContent = "本周累计完成 "+vals.reduce(function(a,b){return a+b;},0)+" 项";
+  chart.setOption({
+    grid:{left:32,right:14,top:20,bottom:24,containLabel:true},
+    tooltip:{trigger:"axis",triggerOn:"click",renderMode:"richText",confine:true},
+    xAxis:{type:"category",data:days,axisLabel:{fontSize:11},axisLine:{lineStyle:{color:"#ECE7DE"}},axisTick:{show:false}},
+    yAxis:{type:"value",minInterval:1,axisLabel:{fontSize:11},splitLine:{lineStyle:{color:"#F1EDE4"}}},
+    series:[{type:"bar",data:vals,barWidth:18,itemStyle:{borderRadius:[6,6,0,0]},label:{show:true,position:"top",fontSize:10,color:"#8A857C"}}]
+  });
+  chart.resize();
+}
+function renderCatChart(){
+  var el = document.getElementById("catChart");
+  if(typeof echarts === "undefined"){ el.innerHTML = ""; return; }
+  var chart = echarts.getInstanceByDom(el) || echarts.init(el);
+  var now = new Date();
+  var monday = new Date(now); monday.setDate(now.getDate()-((now.getDay()||7)-1));
+  var counts = {};
+  for(var i=0;i<30;i++){
+    var d = new Date(monday); d.setDate(monday.getDate()-i);
+    var rec = state.records[fmtDate(d)];
+    if(!rec) continue;
+    for(var j=0;j<rec.length;j++){
+      var tk = taskById(rec[j]);
+      if(tk) counts[tk.c] = (counts[tk.c]||0)+1;
+    }
+  }
+  var names = [], vals = [], colors = [];
+  for(var k=0;k<CATS.length;k++){
+    var c = CATS[k];
+    if(counts[c.id]){
+      names.push(c.name); vals.push(counts[c.id]); colors.push(c.color);
+    }
+  }
+  chart.setOption({
+    grid:{left:10,right:20,top:16,bottom:24,containLabel:true},
+    tooltip:{trigger:"item",triggerOn:"click",renderMode:"richText",confine:true},
+    xAxis:{type:"value",axisLabel:{fontSize:11},splitLine:{lineStyle:{color:"#F1EDE4"}}},
+    yAxis:{type:"category",data:names.reverse(),axisLabel:{fontSize:11},axisTick:{show:false},axisLine:{lineStyle:{color:"#ECE7DE"}}},
+    series:[{type:"bar",data:vals.reverse(),barWidth:12,itemStyle:{color:function(p){ return colors[colors.length-1-p.dataIndex]; }},label:{show:true,position:"right",fontSize:10,color:"#8A857C"}}]
+  });
+  chart.resize();
+}
+function renderInsight(){
+  var box = document.getElementById("insightBox");
+  var txt = document.getElementById("insightText");
+  var sd = streakDays();
+  var wk = weekRate();
+  var now = new Date();
+  var todayCnt = todayDone().length;
+  var msg = "";
+  if(sd===0 && todayCnt===0) msg = "从今天开始，先打卡 1 件事，就算赢。";
+  else if(sd>=21) msg = "连续 "+sd+" 天，已经超过大多数用户了。可以试着新增 1 类任务挑战自己。";
+  else if(sd>=7) msg = "连续 "+sd+" 天，习惯正在形成。保持节奏，别追求完美。";
+  else if(sd>=3) msg = "连续 "+sd+" 天，好的开始。明天继续就会进入稳定期。";
+  else if(wk>=70) msg = "本周完成率 "+wk+"%，状态很好。周末可以加量，也可以休息。";
+  else if(wk>=40) msg = "本周完成率 "+wk+"%，不错。试试把任务拆得更小一点。";
+  else msg = "打卡还不多。建议每天只定 3 件小事，更容易坚持。";
+  var hour = now.getHours();
+  if(hour>=22 && todayCnt===0) msg = "今天还没打卡。不用补完所有，睡前完成 1 件，给明天一个好开头。";
+  txt.textContent = msg;
+}
+
+/* ===== 设置 ===== */
+function renderSet(){
+  document.getElementById("goalInput").value = state.goal;
+  document.getElementById("remindHour").value = state.remindHour;
+  var segs = document.querySelectorAll("#remindSeg button");
+  for(var i=0;i<segs.length;i++) segs[i].classList.toggle("on", parseInt(segs[i].getAttribute("data-v"))===state.remind);
+}
+document.getElementById("goalInput").addEventListener("change", function(){
+  var v = parseInt(this.value);
+  if(!v || v<1) v=5; if(v>30) v=30;
+  state.goal = v; save(); toast("每日目标已设为 "+v+" 项");
+});
+document.getElementById("remindSeg").addEventListener("click", function(e){
+  var b = e.target.closest ? e.target.closest("button") : null;
+  if(!b) return;
+  state.remind = parseInt(b.getAttribute("data-v"));
+  save(); renderSet();
+  toast(state.remind===2 ? "强提醒已开启" : state.remind===1 ? "温和提醒已开启" : "已关闭提醒");
+});
+document.getElementById("remindHour").addEventListener("change", function(){
+  var v = parseInt(this.value);
+  if(isNaN(v)||v<0||v>23) v=19;
+  state.remindHour = v; save(); toast("提醒时间设为 "+v+" 点");
+});
+/* 导出 / 导入 / 重置 */
+document.getElementById("exportBtn").addEventListener("click", function(){
+  var blob = new Blob([JSON.stringify(state,null,2)], {type:"application/json"});
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "摸鱼自我提升-备份-"+todayStr()+".json";
+  document.body.appendChild(a); a.click();
+  setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 200);
+  toast("备份已导出");
+});
+document.getElementById("importBtn").addEventListener("click", function(){
+  document.getElementById("importFile").click();
+});
+document.getElementById("importFile").addEventListener("change", function(e){
+  var f = e.target.files[0];
+  if(!f) return;
+  var reader = new FileReader();
+  reader.onload = function(ev){
+    try{
+      var s = JSON.parse(ev.target.result);
+      if(!s.records) throw new Error("bad");
+      state = s;
+      if(!state.syncTs) state.syncTs = 0;
+      save(); renderAll(); toast("备份已导入");
+    }catch(err){ toast("文件格式不对，请重新导出"); }
+  };
+  reader.readAsText(f);
+  e.target.value = "";
+});
+document.getElementById("resetBtn").addEventListener("click", function(){
+  if(confirm("确定清空全部打卡数据吗？此操作不可恢复。")){
+    state = {records:{},goal:5,remind:1,remindHour:19,today:{},fav:[],syncTs:0};
+    save(); renderAll(); toast("已清空");
+  }
+});
+
+/* ===== 双端同步 ===== */
+function buildSyncData(){
+  var rec = {};
+  for(var date in state.records){
+    if(state.records[date] && state.records[date].length) rec[date] = state.records[date];
+  }
+  var today = [];
+  for(var k in state.today) today.push(k);
+  return {v:1, ts:Date.now(), records:rec, today:today, goal:state.goal, remind:state.remind, remindHour:state.remindHour};
+}
+function buildSyncText(){
+  return "MOYUSYNC1:" + JSON.stringify(buildSyncData());
+}
+function parseSyncText(txt){
+  txt = String(txt||"").trim();
+  if(txt.indexOf("MOYUSYNC1:")===0) txt = txt.slice(10);
+  var d = JSON.parse(txt);
+  if(!d || !d.records || typeof d.records !== "object") throw new Error("bad");
+  return d;
+}
+function mergeSyncData(d){
+  var merged = false;
+  for(var date in d.records){
+    var arr = d.records[date] || [];
+    if(!arr.length) continue;
+    if(!state.records[date]) state.records[date] = [];
+    for(var i=0;i<arr.length;i++){
+      if(state.records[date].indexOf(arr[i])===-1){ state.records[date].push(arr[i]); merged = true; }
+    }
+  }
+  var tarr = d.today || [];
+  for(var j=0;j<tarr.length;j++){
+    if(state.today[tarr[j]]===undefined){ state.today[tarr[j]] = false; merged = true; }
+  }
+  var newTs = d.ts || 0;
+  if(newTs > (state.syncTs||0)){
+    if(d.goal) state.goal = d.goal;
+    if(d.remind!==undefined) state.remind = d.remind;
+    if(d.remindHour!==undefined) state.remindHour = d.remindHour;
+  }
+  state.syncTs = Math.max(newTs, state.syncTs||0);
+  save();
+  return merged;
+}
+function renderSync(){
+  var tip = document.getElementById("syncTsTip");
+  if(tip){
+    tip.textContent = state.syncTs ? "上次同步：" + new Date(state.syncTs).toLocaleString("zh-CN",{hour12:false}) : "还没有同步过";
+  }
+  var isFile = location.protocol === "file:";
+  var zone = document.getElementById("qrZone");
+  var note = document.getElementById("qrNote");
+  if(zone && note){
+    zone.style.display = isFile ? "none" : "";
+    note.style.display = isFile ? "" : "none";
+  }
+}
+document.getElementById("qrBtn").addEventListener("click", function(){
+  var proto = location.protocol;
+  if(proto !== "http:" && proto !== "https:"){
+    toast("扫码需要部署成网址后使用（如 GitHub Pages）。当前是本地文件模式，请用复制 / 粘贴同步");
+    return;
+  }
+  var data = buildSyncData();
+  var payload = JSON.stringify(data);
+  if(payload.length > 2400){
+    toast("打卡数据较多，扫码可能扫不出来，请用复制 / 粘贴同步");
+    return;
+  }
+  var b64 = btoa(payload);
+  var base = location.href.split("?")[0].split("#")[0];
+  var url = base + "?sync=" + encodeURIComponent(b64);
+  var box = document.getElementById("qrBox");
+  box.innerHTML = "";
+  if(typeof QRCode === "undefined"){
+    box.innerHTML = '<p class="sync-tip">二维码组件加载失败，请用复制 / 粘贴同步</p>';
+    return;
+  }
+  try{
+    new QRCode(box, {text:url, width:190, height:190, correctLevel:QRCode.CorrectLevel.L});
+  }catch(e){
+    box.innerHTML = '<p class="sync-tip">数据较长，扫码可能不稳定，请用复制 / 粘贴同步</p>';
+  }
+  toast("已生成，用手机相机扫一扫");
+});
+document.getElementById("copySyncBtn").addEventListener("click", function(){
+  var txt = buildSyncText();
+  var ta = document.getElementById("syncText");
+  ta.value = txt;
+  var done = function(){ toast("同步文本已复制，去另一台设备粘贴并合并"); };
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(done, function(){ ta.select(); document.execCommand("copy"); done(); });
+  } else {
+    ta.select();
+    document.execCommand("copy");
+    done();
+  }
+});
+document.getElementById("mergeSyncBtn").addEventListener("click", function(){
+  var txt = document.getElementById("syncText").value;
+  if(!txt.trim()){ toast("先粘贴另一台设备的同步文本"); return; }
+  try{
+    var d = parseSyncText(txt);
+    mergeSyncData(d);
+    document.getElementById("syncText").value = "";
+    renderAll();
+    toast("合并完成，两边打卡已互通");
+  }catch(e){
+    toast("文本格式不对，请完整复制同步文本");
+  }
+});
+function parseSyncParam(){
+  try{
+    var m = location.search.match(/[?&]sync=([^&]+)/);
+    if(!m) return;
+    var json = atob(decodeURIComponent(m[1]));
+    var d = JSON.parse(json);
+    mergeSyncData(d);
+    history.replaceState(null, "", location.pathname + location.hash);
+    toast("已同步另一台设备的打卡数据");
+  }catch(e){}
+}
+
+/* ===== 提醒（浏览器通知） ===== */
+function checkRemind(){
+  if(!("Notification" in window)) return;
+  if(state.remind===0) return;
+  var now = new Date();
+  if(now.getHours() !== state.remindHour) return;
+  var todayKey = "reminded-"+todayStr();
+  if(sessionStorage.getItem(todayKey)) return;
+  var undone = 0;
+  for(var k in state.today) if(todayDone().indexOf(k)===-1) undone++;
+  if(undone===0) return;
+  if(Notification.permission === "granted"){
+    new Notification("摸鱼自我提升", { body: state.remind===2 ? "还有 "+undone+" 件事没完成，抽空补一下吧" : "今天已完成 "+todayDone().length+" 件事，还有 "+undone+" 件待办" });
+    sessionStorage.setItem(todayKey, "1");
+  }
+}
+/* 请求通知权限按钮（温和/强提醒时） */
+function requestNotify(){
+  if(state.remind===0) return;
+  if("Notification" in window && Notification.permission === "default"){
+    Notification.requestPermission();
+  }
+}
+
+/* ===== Toast ===== */
+var toastTimer = null;
+function toast(msg){
+  var old = document.getElementById("toastBox");
+  if(old) old.remove();
+  var box = document.createElement("div");
+  box.id = "toastBox";
+  box.style.cssText = "position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:rgba(43,42,40,.92);color:#fff;font-size:13px;padding:10px 18px;border-radius:22px;z-index:99;transition:opacity .3s;max-width:80vw;text-align:center";
+  box.textContent = msg;
+  document.body.appendChild(box);
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ box.style.opacity = "0"; setTimeout(function(){ box.remove(); },300); }, 1600);
+}
+
+function renderAll(){
+  renderTop(); ensureToday(); renderToday(); renderCatChips(); renderSet(); renderSync();
+}
+document.addEventListener("visibilitychange", function(){
+  if(!document.hidden) renderAll();
+});
+parseSyncParam();
+renderAll();
+checkRemind();
+setInterval(function(){ var h = new Date().getHours(); if(h===state.remindHour) checkRemind(); }, 60000);
+
+</script>
+</body>
+</html>
