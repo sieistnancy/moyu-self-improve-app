@@ -1181,26 +1181,6 @@ function renderSync(){
     note.style.display = isFile ? "" : "none";
   }
 }
-document.getElementById("qrBtn").addEventListener("click", function(){
-  var proto = location.protocol;
-  if(proto !== "http:" && proto !== "https:"){
-    toast("扫码需要部署成网址后使用（如 GitHub Pages）。当前是本地文件模式，请用复制 / 粘贴同步");
-    return;
-  }
-  var base = location.href.split("?")[0].split("#")[0];
-  var box = document.getElementById("qrBox");
-  box.innerHTML = "";
-  if(typeof QRCode === "undefined"){
-    box.innerHTML = '<p class="sync-tip">二维码组件加载失败，请用复制 / 粘贴同步</p>';
-    return;
-  }
-  try{
-    new QRCode(box, {text:base, width:190, height:190, correctLevel:QRCode.CorrectLevel.L});
-  }catch(e){
-    box.innerHTML = '<p class="sync-tip">生成失败，请用复制 / 粘贴同步</p>';
-  }
-  toast("已生成：手机扫码打开本页，然后用复制粘贴同步数据");
-});
 document.getElementById("copySyncBtn").addEventListener("click", function(){
   var txt = buildSyncText();
   var ta = document.getElementById("syncText");
