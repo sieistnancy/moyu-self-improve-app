@@ -351,11 +351,18 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
       <p>手机和电脑打开同一个页面（部署后的网址），在任意一端打卡，用下面任一方式把数据同步过去。合并时两边的打卡都会保留，不会互相覆盖。</p>
     </div>
     <div class="set-group">
-      <h3>自动同步房间（推荐）</h3>
-      <p class="sync-tip">开启后，这台设备与绑定同一房间的设备会自动互相同步打卡数据，不用手动复制粘贴。</p>
+      <h3>复制 / 粘贴同步（国内推荐）</h3>
+      <p class="sync-tip">最简单可靠：电脑点「复制」→ 微信文件传输助手发给自己 → 手机打开本页粘贴 → 点「合并数据」。手机传回电脑同理。不依赖网络，一定能用。</p>
+      <button class="btn" id="copySyncBtn">复制同步文本</button>
+      <textarea id="syncText" rows="4" placeholder="在这里粘贴另一台设备的同步文本…"></textarea>
+      <button class="btn ghost" id="mergeSyncBtn" style="margin-top:10px">合并数据</button>
+    </div>
+    <div class="set-group">
+      <h3>自动同步房间（网络好时自动）</h3>
+      <p class="sync-tip">开启后两台设备自动互相同步，不用手动复制。如果连不上（国内部分网络不稳定），用上面的复制粘贴即可。</p>
       <div id="roomOff">
         <button class="btn" id="roomStartBtn">开启自动同步</button>
-        <p class="sync-tip">开启后会生成随机房间码，用另一台设备扫下面的二维码绑定即可。</p>
+        <p class="sync-tip">开启后会生成随机房间码，用另一台设备扫二维码绑定。</p>
       </div>
       <div id="roomOn" style="display:none">
         <p class="sync-tip" id="roomStatus">连接中…</p>
@@ -365,20 +372,13 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
       </div>
     </div>
     <div class="set-group">
-      <h3>扫码同步（电脑 → 手机，推荐）</h3>
-      <p class="sync-tip">在电脑上点「生成同步二维码」，用手机相机扫一扫，会自动打开本页面并合并数据。</p>
+      <h3>扫码同步（电脑 → 手机）</h3>
+      <p class="sync-tip">电脑点「生成同步二维码」，手机相机扫一扫自动打开本页合并数据。</p>
       <div class="qr-zone" id="qrZone">
         <div id="qrBox"></div>
         <button class="btn" id="qrBtn">生成同步二维码</button>
       </div>
-      <p class="sync-tip" id="qrNote" style="display:none">当前是本地文件模式（file://），无法生成可扫码打开的链接，请改用下方「复制 / 粘贴同步」。</p>
-    </div>
-    <div class="set-group">
-      <h3>复制 / 粘贴同步（双向通用）</h3>
-      <p class="sync-tip">电脑：点「复制同步文本」→ 用微信/QQ 发给自己 → 手机打开本页面粘贴 → 点「合并数据」。手机传回电脑同理，两边方向都支持。</p>
-      <button class="btn" id="copySyncBtn">复制同步文本</button>
-      <textarea id="syncText" rows="4" placeholder="在这里粘贴另一台设备的同步文本…"></textarea>
-      <button class="btn ghost" id="mergeSyncBtn" style="margin-top:10px">合并数据</button>
+      <p class="sync-tip" id="qrNote" style="display:none">本地文件模式无法生成链接，请用上面的复制粘贴。</p>
     </div>
     <div class="set-group">
       <h3>同步说明</h3>
@@ -549,7 +549,9 @@ function loadState(){
     if(!s.custom) s.custom = [];          // 用户自定义任务 [{id,c,f,w,n}]
     if(!s.identity) s.identity = "";
     if(!s.theme) s.theme = "warm";
-    if(s.skipHoliday===undefined) s.skipHoliday = false;      // 身份："" 不限 / worker / student / exam / freelance
+    if(s.skipHoliday===undefined) s.skipHoliday = false;
+    if(!s.gistToken) s.gistToken = "";
+    if(!s.gistId) s.gistId = "";      // 身份："" 不限 / worker / student / exam / freelance
     if(!s.syncTs) s.syncTs = 0;
     return s;
   }catch(e){ return {records:{},goal:5,remind:1,remindHour:19,today:{},fav:[],custom:[],identity:"",theme:"warm",syncTs:0}; }
