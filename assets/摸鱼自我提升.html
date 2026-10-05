@@ -351,18 +351,11 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
       <p>手机和电脑打开同一个页面（部署后的网址），在任意一端打卡，用下面任一方式把数据同步过去。合并时两边的打卡都会保留，不会互相覆盖。</p>
     </div>
     <div class="set-group">
-      <h3>复制 / 粘贴同步（国内推荐）</h3>
-      <p class="sync-tip">最简单可靠：电脑点「复制」→ 微信文件传输助手发给自己 → 手机打开本页粘贴 → 点「合并数据」。手机传回电脑同理。不依赖网络，一定能用。</p>
-      <button class="btn" id="copySyncBtn">复制同步文本</button>
-      <textarea id="syncText" rows="4" placeholder="在这里粘贴另一台设备的同步文本…"></textarea>
-      <button class="btn ghost" id="mergeSyncBtn" style="margin-top:10px">合并数据</button>
-    </div>
-    <div class="set-group">
-      <h3>自动同步房间（网络好时自动）</h3>
-      <p class="sync-tip">开启后两台设备自动互相同步，不用手动复制。如果连不上（国内部分网络不稳定），用上面的复制粘贴即可。</p>
+      <h3>自动同步房间（推荐 iPhone 用 Safari）</h3>
+      <p class="sync-tip">开启后两台设备后台自动同步，不用手动操作。iPhone 用 Safari 打开体验最好；安卓连不上时用下面的复制粘贴。</p>
       <div id="roomOff">
         <button class="btn" id="roomStartBtn">开启自动同步</button>
-        <p class="sync-tip">开启后会生成随机房间码，用另一台设备扫二维码绑定。</p>
+        <p class="sync-tip">开启后生成随机房间码，另一台设备扫码绑定。</p>
       </div>
       <div id="roomOn" style="display:none">
         <p class="sync-tip" id="roomStatus">连接中…</p>
@@ -372,13 +365,20 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
       </div>
     </div>
     <div class="set-group">
-      <h3>扫码同步（电脑 → 手机）</h3>
+      <h3>扫码同步</h3>
       <p class="sync-tip">电脑点「生成同步二维码」，手机相机扫一扫自动打开本页合并数据。</p>
       <div class="qr-zone" id="qrZone">
         <div id="qrBox"></div>
         <button class="btn" id="qrBtn">生成同步二维码</button>
       </div>
-      <p class="sync-tip" id="qrNote" style="display:none">本地文件模式无法生成链接，请用上面的复制粘贴。</p>
+      <p class="sync-tip" id="qrNote" style="display:none">本地文件模式无法生成链接，请用下面的复制粘贴。</p>
+    </div>
+    <div class="set-group">
+      <h3>复制 / 粘贴同步（安卓 / 鸿蒙使用）</h3>
+      <p class="sync-tip">电脑点「复制同步文本」，下方会出现二维码：手机扫码打开本页 → 在输入框粘贴 → 点「合并数据」。不依赖网络，一定能用。</p>
+      <button class="btn" id="copySyncBtn">复制同步文本</button>
+      <textarea id="syncText" rows="4" placeholder="在这里粘贴另一台设备的同步文本…"></textarea>
+      <button class="btn ghost" id="mergeSyncBtn" style="margin-top:10px">合并数据</button>
     </div>
     <div class="set-group">
       <h3>同步说明</h3>
@@ -1257,8 +1257,8 @@ document.getElementById("mergeSyncBtn").addEventListener("click", function(){
     var d = parseSyncText(txt);
     mergeSyncData(d);
     document.getElementById("syncText").value = "";
-    renderAll();
     toast("合并完成，两边打卡已互通");
+    setTimeout(function(){ try{ renderAll(); }catch(e){} }, 100);
   }catch(e){
     toast("文本格式不对，请完整复制同步文本");
   }
