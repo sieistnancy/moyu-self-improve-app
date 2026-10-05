@@ -1012,7 +1012,7 @@ function renderCatChart(){
     grid:{left:10,right:30,top:16,bottom:24,containLabel:true},
     tooltip:{trigger:"item",triggerOn:"click",renderMode:"richText",confine:true},
     xAxis:{type:"value",minInterval:1,axisLabel:{fontSize:11},splitLine:{lineStyle:{color:"#F1EDE4"}}},
-    yAxis:{type:"category",data:names,inverse:true,axisLabel:{fontSize:11},axisTick:{show:false},axisLine:{lineStyle:{color:"#ECE7DE"}}},
+    yAxis:{type:"category",data:names,inverse:true,axisLabel:{fontSize:11,interval:0},axisTick:{show:false},axisLine:{lineStyle:{color:"#ECE7DE"}}},
     series:[{type:"bar",data:data,barWidth:10,barCategoryGap:"45%",label:{show:true,position:"right",fontSize:10,color:"#8A857C"}}]
   });
   chart.resize();
