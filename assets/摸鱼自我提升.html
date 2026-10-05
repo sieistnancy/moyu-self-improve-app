@@ -365,15 +365,6 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
       </div>
     </div>
     <div class="set-group">
-      <h3>扫码同步</h3>
-      <p class="sync-tip">电脑点「生成同步二维码」，手机相机扫一扫自动打开本页合并数据。</p>
-      <div class="qr-zone" id="qrZone">
-        <div id="qrBox"></div>
-        <button class="btn" id="qrBtn">生成同步二维码</button>
-      </div>
-      <p class="sync-tip" id="qrNote" style="display:none">本地文件模式无法生成链接，请用下面的复制粘贴。</p>
-    </div>
-    <div class="set-group">
       <h3>复制 / 粘贴同步（安卓 / 鸿蒙使用）</h3>
       <p class="sync-tip">电脑点「复制同步文本」，下方会出现二维码：手机扫码打开本页 → 在输入框粘贴 → 点「合并数据」。不依赖网络，一定能用。</p>
       <button class="btn" id="copySyncBtn">复制同步文本</button>
@@ -1196,15 +1187,7 @@ document.getElementById("qrBtn").addEventListener("click", function(){
     toast("扫码需要部署成网址后使用（如 GitHub Pages）。当前是本地文件模式，请用复制 / 粘贴同步");
     return;
   }
-  var data = buildSyncData();
-  var payload = JSON.stringify(data);
-  if(payload.length > 2400){
-    toast("打卡数据较多，扫码可能扫不出来，请用复制 / 粘贴同步");
-    return;
-  }
-  var b64 = btoa(payload);
   var base = location.href.split("?")[0].split("#")[0];
-  var url = base + "?sync=" + encodeURIComponent(b64);
   var box = document.getElementById("qrBox");
   box.innerHTML = "";
   if(typeof QRCode === "undefined"){
@@ -1212,11 +1195,11 @@ document.getElementById("qrBtn").addEventListener("click", function(){
     return;
   }
   try{
-    new QRCode(box, {text:url, width:190, height:190, correctLevel:QRCode.CorrectLevel.L});
+    new QRCode(box, {text:base, width:190, height:190, correctLevel:QRCode.CorrectLevel.L});
   }catch(e){
-    box.innerHTML = '<p class="sync-tip">数据较长，扫码可能不稳定，请用复制 / 粘贴同步</p>';
+    box.innerHTML = '<p class="sync-tip">生成失败，请用复制 / 粘贴同步</p>';
   }
-  toast("已生成，用手机相机扫一扫");
+  toast("已生成：手机扫码打开本页，然后用复制粘贴同步数据");
 });
 document.getElementById("copySyncBtn").addEventListener("click", function(){
   var txt = buildSyncText();
