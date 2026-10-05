@@ -2,773 +2,905 @@
  "cats": [
   {
    "id": "diet",
-   "name": "饮食管理"
+   "name": "饮食管理",
+   "color": "#8FA98F"
   },
   {
    "id": "move",
-   "name": "工位微运动"
+   "name": "工位微运动",
+   "color": "#8FA8C8"
   },
   {
    "id": "mood",
-   "name": "情绪管理"
+   "name": "情绪管理",
+   "color": "#D9A5A0"
   },
   {
    "id": "learn",
-   "name": "学习充电"
+   "name": "学习充电",
+   "color": "#C9A86A"
   },
   {
    "id": "money",
-   "name": "理财记账"
+   "name": "理财记账",
+   "color": "#B39BC8"
   },
   {
    "id": "work",
-   "name": "职场成长"
+   "name": "职场成长",
+   "color": "#7FA8A0"
   },
   {
    "id": "health",
-   "name": "健康作息"
+   "name": "健康作息",
+   "color": "#D4A56E"
   },
   {
    "id": "hobby",
-   "name": "兴趣创造"
+   "name": "兴趣创造",
+   "color": "#C8918F"
   },
   {
    "id": "social",
-   "name": "社交关系"
+   "name": "社交关系",
+   "color": "#9BA6C8"
   },
   {
    "id": "reflect",
-   "name": "复盘反思"
+   "name": "复盘反思",
+   "color": "#8FA6B8"
   },
   {
    "id": "tidy",
-   "name": "整理断舍离"
+   "name": "整理断舍离",
+   "color": "#A5A08A"
   },
   {
    "id": "rest",
-   "name": "放松恢复"
+   "name": "放松恢复",
+   "color": "#BFA87E"
   }
  ],
  "tasks": [
   {
    "id": "d1",
-   "cat": "diet",
-   "name": "吃够 5 种颜色的蔬果",
-   "cat_name": "饮食管理"
+   "c": "diet",
+   "f": "daily",
+   "w": "both",
+   "n": "吃够 5 种颜色的蔬果"
   },
   {
    "id": "d2",
-   "cat": "diet",
-   "name": "喝够 8 杯水（记录）",
-   "cat_name": "饮食管理"
+   "c": "diet",
+   "f": "daily",
+   "w": "both",
+   "n": "喝够 8 杯水（记录）"
   },
   {
    "id": "d3",
-   "cat": "diet",
-   "name": "加一份蛋白质（蛋/豆/奶）",
-   "cat_name": "饮食管理"
+   "c": "diet",
+   "f": "daily",
+   "w": "both",
+   "n": "加一份蛋白质（蛋/豆/奶）"
   },
   {
    "id": "d4",
-   "cat": "diet",
-   "name": "吃一份完整水果",
-   "cat_name": "饮食管理"
+   "c": "diet",
+   "f": "daily",
+   "w": "both",
+   "n": "吃一份完整水果"
   },
   {
    "id": "d5",
-   "cat": "diet",
-   "name": "饭前喝一杯温水",
-   "cat_name": "饮食管理"
+   "c": "diet",
+   "f": "daily",
+   "w": "both",
+   "n": "饭前喝一杯温水"
   },
   {
    "id": "d6",
-   "cat": "diet",
-   "name": "记录今日一餐",
-   "cat_name": "饮食管理"
+   "c": "diet",
+   "f": "daily",
+   "w": "both",
+   "n": "记录今日一餐"
   },
   {
    "id": "d7",
-   "cat": "diet",
-   "name": "用无糖饮品替代含糖饮料",
-   "cat_name": "饮食管理"
+   "c": "diet",
+   "f": "daily",
+   "w": "both",
+   "n": "用无糖饮品替代含糖饮料"
   },
   {
    "id": "d8",
-   "cat": "diet",
-   "name": "吃一小把坚果",
-   "cat_name": "饮食管理"
+   "c": "diet",
+   "f": "daily",
+   "w": "both",
+   "n": "吃一小把坚果"
   },
   {
    "id": "d9",
-   "cat": "diet",
-   "name": "午餐加一份绿叶菜",
-   "cat_name": "饮食管理"
+   "c": "diet",
+   "f": "daily",
+   "w": "both",
+   "n": "午餐加一份绿叶菜"
   },
   {
    "id": "d10",
-   "cat": "diet",
-   "name": "细嚼慢咽吃完一顿饭",
-   "cat_name": "饮食管理"
+   "c": "diet",
+   "f": "daily",
+   "w": "both",
+   "n": "细嚼慢咽吃完一顿饭"
   },
   {
    "id": "m1",
-   "cat": "move",
-   "name": "提踵 20 次",
-   "cat_name": "工位微运动"
+   "c": "move",
+   "f": "daily",
+   "w": "workday",
+   "n": "提踵 20 次"
   },
   {
    "id": "m2",
-   "cat": "move",
-   "name": "提肛（凯格尔）10 组",
-   "cat_name": "工位微运动"
+   "c": "move",
+   "f": "daily",
+   "w": "workday",
+   "n": "提肛（凯格尔）10 组"
   },
   {
    "id": "m3",
-   "cat": "move",
-   "name": "靠墙静蹲 60 秒",
-   "cat_name": "工位微运动"
+   "c": "move",
+   "f": "daily",
+   "w": "workday",
+   "n": "靠墙静蹲 60 秒"
   },
   {
    "id": "m4",
-   "cat": "move",
-   "name": "肩部绕环 30 秒",
-   "cat_name": "工位微运动"
+   "c": "move",
+   "f": "daily",
+   "w": "workday",
+   "n": "肩部绕环 30 秒"
   },
   {
    "id": "m5",
-   "cat": "move",
-   "name": "颈部左右拉伸",
-   "cat_name": "工位微运动"
+   "c": "move",
+   "f": "daily",
+   "w": "workday",
+   "n": "颈部左右拉伸"
   },
   {
    "id": "m6",
-   "cat": "move",
-   "name": "扩胸开肩 10 次",
-   "cat_name": "工位微运动"
+   "c": "move",
+   "f": "daily",
+   "w": "workday",
+   "n": "扩胸开肩 10 次"
   },
   {
    "id": "m7",
-   "cat": "move",
-   "name": "手腕放松绕环",
-   "cat_name": "工位微运动"
+   "c": "move",
+   "f": "daily",
+   "w": "workday",
+   "n": "手腕放松绕环"
   },
   {
    "id": "m8",
-   "cat": "move",
-   "name": "眼保健操一套",
-   "cat_name": "工位微运动"
+   "c": "move",
+   "f": "daily",
+   "w": "workday",
+   "n": "眼保健操一套"
   },
   {
    "id": "m9",
-   "cat": "move",
-   "name": "踮脚尖走几步",
-   "cat_name": "工位微运动"
+   "c": "move",
+   "f": "daily",
+   "w": "workday",
+   "n": "踮脚尖走几步"
   },
   {
    "id": "m10",
-   "cat": "move",
-   "name": "工位深蹲 10 个",
-   "cat_name": "工位微运动"
+   "c": "move",
+   "f": "daily",
+   "w": "workday",
+   "n": "工位深蹲 10 个"
   },
   {
    "id": "e1",
-   "cat": "mood",
-   "name": "写下 3 件感恩小事",
-   "cat_name": "情绪管理"
+   "c": "mood",
+   "f": "daily",
+   "w": "both",
+   "n": "写下 3 件感恩小事"
   },
   {
    "id": "e2",
-   "cat": "mood",
-   "name": "情绪日记写一句话",
-   "cat_name": "情绪管理"
+   "c": "mood",
+   "f": "daily",
+   "w": "both",
+   "n": "情绪日记写一句话"
   },
   {
    "id": "e3",
-   "cat": "mood",
-   "name": "3 分钟正念呼吸",
-   "cat_name": "情绪管理"
+   "c": "mood",
+   "f": "daily",
+   "w": "both",
+   "n": "3 分钟正念呼吸"
   },
   {
    "id": "e4",
-   "cat": "mood",
-   "name": "4-7-8 深呼吸 1 分钟",
-   "cat_name": "情绪管理"
+   "c": "mood",
+   "f": "daily",
+   "w": "both",
+   "n": "4-7-8 深呼吸 1 分钟"
   },
   {
    "id": "e5",
-   "cat": "mood",
-   "name": "听一首喜欢的歌",
-   "cat_name": "情绪管理"
+   "c": "mood",
+   "f": "daily",
+   "w": "both",
+   "n": "听一首喜欢的歌"
   },
   {
    "id": "e6",
-   "cat": "mood",
-   "name": "给自己一句积极暗示",
-   "cat_name": "情绪管理"
+   "c": "mood",
+   "f": "daily",
+   "w": "both",
+   "n": "给自己一句积极暗示"
   },
   {
    "id": "e7",
-   "cat": "mood",
-   "name": "写下烦恼并划掉一件可控的",
-   "cat_name": "情绪管理"
+   "c": "mood",
+   "f": "daily",
+   "w": "both",
+   "n": "写下烦恼并划掉一件可控的"
   },
   {
    "id": "e8",
-   "cat": "mood",
-   "name": "暂停 5 秒再回应消息",
-   "cat_name": "情绪管理"
+   "c": "mood",
+   "f": "daily",
+   "w": "both",
+   "n": "暂停 5 秒再回应消息"
   },
   {
    "id": "e9",
-   "cat": "mood",
-   "name": "微笑练习 30 秒",
-   "cat_name": "情绪管理"
+   "c": "mood",
+   "f": "daily",
+   "w": "both",
+   "n": "微笑练习 30 秒"
   },
   {
    "id": "e10",
-   "cat": "mood",
-   "name": "给此刻情绪命名",
-   "cat_name": "情绪管理"
+   "c": "mood",
+   "f": "daily",
+   "w": "both",
+   "n": "给此刻情绪命名"
   },
   {
    "id": "l1",
-   "cat": "learn",
-   "name": "多邻国打卡",
-   "cat_name": "学习充电"
+   "c": "learn",
+   "f": "daily",
+   "w": "both",
+   "n": "多邻国打卡"
   },
   {
    "id": "l2",
-   "cat": "learn",
-   "name": "背 10 个英语单词",
-   "cat_name": "学习充电"
+   "c": "learn",
+   "f": "daily",
+   "w": "both",
+   "n": "背 10 个英语单词"
   },
   {
    "id": "l3",
-   "cat": "learn",
-   "name": "读 10 页书",
-   "cat_name": "学习充电"
+   "c": "learn",
+   "f": "daily",
+   "w": "both",
+   "n": "读 10 页书"
   },
   {
    "id": "l4",
-   "cat": "learn",
-   "name": "听一节播客",
-   "cat_name": "学习充电"
+   "c": "learn",
+   "f": "daily",
+   "w": "both",
+   "n": "听一节播客"
   },
   {
    "id": "l5",
-   "cat": "learn",
-   "name": "看一篇行业文章",
-   "cat_name": "学习充电"
+   "c": "learn",
+   "f": "daily",
+   "w": "both",
+   "n": "看一篇行业文章"
   },
   {
    "id": "l6",
-   "cat": "learn",
-   "name": "学 1 个新概念并复述",
-   "cat_name": "学习充电"
+   "c": "learn",
+   "f": "daily",
+   "w": "both",
+   "n": "学 1 个新概念并复述"
   },
   {
    "id": "l7",
-   "cat": "learn",
-   "name": "刷 10 道题/错题",
-   "cat_name": "学习充电"
+   "c": "learn",
+   "f": "daily",
+   "w": "both",
+   "n": "刷 10 道题/错题"
   },
   {
    "id": "l8",
-   "cat": "learn",
-   "name": "看一段 TED 演讲",
-   "cat_name": "学习充电"
+   "c": "learn",
+   "f": "weekly",
+   "w": "both",
+   "n": "看一段 TED 演讲"
   },
   {
    "id": "l9",
-   "cat": "learn",
-   "name": "写 100 字学习笔记",
-   "cat_name": "学习充电"
+   "c": "learn",
+   "f": "daily",
+   "w": "both",
+   "n": "写 100 字学习笔记"
   },
   {
    "id": "l10",
-   "cat": "learn",
-   "name": "练 15 分钟新技能",
-   "cat_name": "学习充电"
+   "c": "learn",
+   "f": "daily",
+   "w": "both",
+   "n": "练 15 分钟新技能"
   },
   {
    "id": "f1",
-   "cat": "money",
-   "name": "记一笔今日支出",
-   "cat_name": "理财记账"
+   "c": "money",
+   "f": "daily",
+   "w": "both",
+   "n": "记一笔今日支出"
   },
   {
    "id": "f2",
-   "cat": "money",
-   "name": "核对本周账单",
-   "cat_name": "理财记账"
+   "c": "money",
+   "f": "weekly",
+   "w": "both",
+   "n": "核对本周账单"
   },
   {
    "id": "f3",
-   "cat": "money",
-   "name": "定投一笔（基金/储蓄）",
-   "cat_name": "理财记账"
+   "c": "money",
+   "f": "weekly",
+   "w": "both",
+   "n": "定投一笔（基金/储蓄）"
   },
   {
    "id": "f4",
-   "cat": "money",
-   "name": "转存 10 元到梦想账户",
-   "cat_name": "理财记账"
+   "c": "money",
+   "f": "daily",
+   "w": "both",
+   "n": "转存 10 元到梦想账户"
   },
   {
    "id": "f5",
-   "cat": "money",
-   "name": "取消一笔非必要订阅",
-   "cat_name": "理财记账"
+   "c": "money",
+   "f": "monthly",
+   "w": "both",
+   "n": "取消一笔非必要订阅"
   },
   {
    "id": "f6",
-   "cat": "money",
-   "name": "看 1 篇理财科普",
-   "cat_name": "理财记账"
+   "c": "money",
+   "f": "daily",
+   "w": "both",
+   "n": "看 1 篇理财科普"
   },
   {
    "id": "f7",
-   "cat": "money",
-   "name": "检查本月预算余量",
-   "cat_name": "理财记账"
+   "c": "money",
+   "f": "monthly",
+   "w": "both",
+   "n": "检查本月预算余量"
   },
   {
    "id": "f8",
-   "cat": "money",
-   "name": "给还款日设日历提醒",
-   "cat_name": "理财记账"
+   "c": "money",
+   "f": "daily",
+   "w": "both",
+   "n": "给还款日设日历提醒"
   },
   {
    "id": "f9",
-   "cat": "money",
-   "name": "盘点一件闲置资产",
-   "cat_name": "理财记账"
+   "c": "money",
+   "f": "monthly",
+   "w": "both",
+   "n": "盘点一件闲置资产"
   },
   {
    "id": "f10",
-   "cat": "money",
-   "name": "写一句本周消费复盘",
-   "cat_name": "理财记账"
+   "c": "money",
+   "f": "weekly",
+   "w": "both",
+   "n": "写一句本周消费复盘"
   },
   {
    "id": "w1",
-   "cat": "work",
-   "name": "复盘当日工作 3 条",
-   "cat_name": "职场成长"
+   "c": "work",
+   "f": "daily",
+   "w": "workday",
+   "n": "复盘当日工作 3 条"
   },
   {
    "id": "w2",
-   "cat": "work",
-   "name": "写明日待办清单",
-   "cat_name": "职场成长"
+   "c": "work",
+   "f": "daily",
+   "w": "workday",
+   "n": "写明日待办清单"
   },
   {
    "id": "w3",
-   "cat": "work",
-   "name": "整理电脑桌面/文件夹",
-   "cat_name": "职场成长"
+   "c": "work",
+   "f": "daily",
+   "w": "workday",
+   "n": "整理电脑桌面/文件夹"
   },
   {
    "id": "w4",
-   "cat": "work",
-   "name": "攒一条周报素材",
-   "cat_name": "职场成长"
+   "c": "work",
+   "f": "weekly",
+   "w": "workday",
+   "n": "攒一条周报素材"
   },
   {
    "id": "w5",
-   "cat": "work",
-   "name": "给同事一条有用反馈",
-   "cat_name": "职场成长"
+   "c": "work",
+   "f": "weekly",
+   "w": "workday",
+   "n": "给同事一条有用反馈"
   },
   {
    "id": "w6",
-   "cat": "work",
-   "name": "学一个职场技能点",
-   "cat_name": "职场成长"
+   "c": "work",
+   "f": "daily",
+   "w": "workday",
+   "n": "学一个职场技能点"
   },
   {
    "id": "w7",
-   "cat": "work",
-   "name": "更新一条人脉备注",
-   "cat_name": "职场成长"
+   "c": "work",
+   "f": "monthly",
+   "w": "workday",
+   "n": "更新一条人脉备注"
   },
   {
    "id": "w8",
-   "cat": "work",
-   "name": "读一条岗位相关 JD",
-   "cat_name": "职场成长"
+   "c": "work",
+   "f": "daily",
+   "w": "workday",
+   "n": "读一条岗位相关 JD"
   },
   {
    "id": "w9",
-   "cat": "work",
-   "name": "记录一次会议要点",
-   "cat_name": "职场成长"
+   "c": "work",
+   "f": "daily",
+   "w": "workday",
+   "n": "记录一次会议要点"
   },
   {
    "id": "w10",
-   "cat": "work",
-   "name": "发一条进展同步",
-   "cat_name": "职场成长"
+   "c": "work",
+   "f": "daily",
+   "w": "workday",
+   "n": "发一条进展同步"
   },
   {
    "id": "h1",
-   "cat": "health",
-   "name": "23 点前放下手机",
-   "cat_name": "健康作息"
+   "c": "health",
+   "f": "daily",
+   "w": "both",
+   "n": "23 点前放下手机"
   },
   {
    "id": "h2",
-   "cat": "health",
-   "name": "午休闭眼 20 分钟",
-   "cat_name": "健康作息"
+   "c": "health",
+   "f": "daily",
+   "w": "both",
+   "n": "午休闭眼 20 分钟"
   },
   {
    "id": "h3",
-   "cat": "health",
-   "name": "记录睡眠时长",
-   "cat_name": "健康作息"
+   "c": "health",
+   "f": "daily",
+   "w": "both",
+   "n": "记录睡眠时长"
   },
   {
    "id": "h4",
-   "cat": "health",
-   "name": "睡前 1 小时不进食",
-   "cat_name": "健康作息"
+   "c": "health",
+   "f": "daily",
+   "w": "both",
+   "n": "睡前 1 小时不进食"
   },
   {
    "id": "h5",
-   "cat": "health",
-   "name": "晒 10 分钟太阳",
-   "cat_name": "健康作息"
+   "c": "health",
+   "f": "daily",
+   "w": "both",
+   "n": "晒 10 分钟太阳"
   },
   {
    "id": "h6",
-   "cat": "health",
-   "name": "吃今日维生素/补剂",
-   "cat_name": "健康作息"
+   "c": "health",
+   "f": "daily",
+   "w": "both",
+   "n": "吃今日维生素/补剂"
   },
   {
    "id": "h7",
-   "cat": "health",
-   "name": "每小时起身活动 1 次",
-   "cat_name": "健康作息"
+   "c": "health",
+   "f": "daily",
+   "w": "both",
+   "n": "每小时起身活动 1 次"
   },
   {
    "id": "h8",
-   "cat": "health",
-   "name": "22:30 前入睡打卡",
-   "cat_name": "健康作息"
+   "c": "health",
+   "f": "daily",
+   "w": "both",
+   "n": "22:30 前入睡打卡"
   },
   {
    "id": "h9",
-   "cat": "health",
-   "name": "睡前拉伸 5 分钟",
-   "cat_name": "健康作息"
+   "c": "health",
+   "f": "daily",
+   "w": "both",
+   "n": "睡前拉伸 5 分钟"
   },
   {
    "id": "h10",
-   "cat": "health",
-   "name": "晨起喝一杯温水并记录",
-   "cat_name": "健康作息"
+   "c": "health",
+   "f": "daily",
+   "w": "both",
+   "n": "晨起喝一杯温水并记录"
   },
   {
    "id": "i1",
-   "cat": "hobby",
-   "name": "画一幅小涂鸦",
-   "cat_name": "兴趣创造"
+   "c": "hobby",
+   "f": "daily",
+   "w": "rest",
+   "n": "画一幅小涂鸦"
   },
   {
    "id": "i2",
-   "cat": "hobby",
-   "name": "写一段心情日记",
-   "cat_name": "兴趣创造"
+   "c": "hobby",
+   "f": "daily",
+   "w": "rest",
+   "n": "写一段心情日记"
   },
   {
    "id": "i3",
-   "cat": "hobby",
-   "name": "拍一张今日照片",
-   "cat_name": "兴趣创造"
+   "c": "hobby",
+   "f": "daily",
+   "w": "rest",
+   "n": "拍一张今日照片"
   },
   {
    "id": "i4",
-   "cat": "hobby",
-   "name": "练 10 分钟字",
-   "cat_name": "兴趣创造"
+   "c": "hobby",
+   "f": "daily",
+   "w": "rest",
+   "n": "练 10 分钟字"
   },
   {
    "id": "i5",
-   "cat": "hobby",
-   "name": "学一首歌的副歌",
-   "cat_name": "兴趣创造"
+   "c": "hobby",
+   "f": "daily",
+   "w": "rest",
+   "n": "学一首歌的副歌"
   },
   {
    "id": "i6",
-   "cat": "hobby",
-   "name": "做一个小手工",
-   "cat_name": "兴趣创造"
+   "c": "hobby",
+   "f": "daily",
+   "w": "rest",
+   "n": "做一个小手工"
   },
   {
    "id": "i7",
-   "cat": "hobby",
-   "name": "记录一个灵感点子",
-   "cat_name": "兴趣创造"
+   "c": "hobby",
+   "f": "daily",
+   "w": "rest",
+   "n": "记录一个灵感点子"
   },
   {
    "id": "i8",
-   "cat": "hobby",
-   "name": "整理手机相册 10 张",
-   "cat_name": "兴趣创造"
+   "c": "hobby",
+   "f": "weekly",
+   "w": "rest",
+   "n": "整理手机相册 10 张"
   },
   {
    "id": "i9",
-   "cat": "hobby",
-   "name": "学一个摄影构图技巧",
-   "cat_name": "兴趣创造"
+   "c": "hobby",
+   "f": "daily",
+   "w": "rest",
+   "n": "学一个摄影构图技巧"
   },
   {
    "id": "i10",
-   "cat": "hobby",
-   "name": "发一条原创社交媒体内容",
-   "cat_name": "兴趣创造"
+   "c": "hobby",
+   "f": "weekly",
+   "w": "rest",
+   "n": "发一条原创社交媒体内容"
   },
   {
    "id": "s1",
-   "cat": "social",
-   "name": "给家人发一条消息",
-   "cat_name": "社交关系"
+   "c": "social",
+   "f": "daily",
+   "w": "both",
+   "n": "给家人发一条消息"
   },
   {
    "id": "s2",
-   "cat": "social",
-   "name": "给朋友点赞评论",
-   "cat_name": "社交关系"
+   "c": "social",
+   "f": "daily",
+   "w": "both",
+   "n": "给朋友点赞评论"
   },
   {
    "id": "s3",
-   "cat": "social",
-   "name": "主动邀约一个人吃饭/散步",
-   "cat_name": "社交关系"
+   "c": "social",
+   "f": "weekly",
+   "w": "both",
+   "n": "主动邀约一个人吃饭/散步"
   },
   {
    "id": "s4",
-   "cat": "social",
-   "name": "给帮助过你的人道谢",
-   "cat_name": "社交关系"
+   "c": "social",
+   "f": "daily",
+   "w": "both",
+   "n": "给帮助过你的人道谢"
   },
   {
    "id": "s5",
-   "cat": "social",
-   "name": "专注听人说完一次",
-   "cat_name": "社交关系"
+   "c": "social",
+   "f": "daily",
+   "w": "both",
+   "n": "专注听人说完一次"
   },
   {
    "id": "s6",
-   "cat": "social",
-   "name": "记录一个朋友生日",
-   "cat_name": "社交关系"
+   "c": "social",
+   "f": "monthly",
+   "w": "both",
+   "n": "记录一个朋友生日"
   },
   {
    "id": "s7",
-   "cat": "social",
-   "name": "整理通讯录加备注",
-   "cat_name": "社交关系"
+   "c": "social",
+   "f": "monthly",
+   "w": "both",
+   "n": "整理通讯录加备注"
   },
   {
    "id": "s8",
-   "cat": "social",
-   "name": "发一条问候",
-   "cat_name": "社交关系"
+   "c": "social",
+   "f": "daily",
+   "w": "both",
+   "n": "发一条问候"
   },
   {
    "id": "s9",
-   "cat": "social",
-   "name": "参加一次线下活动",
-   "cat_name": "社交关系"
+   "c": "social",
+   "f": "monthly",
+   "w": "both",
+   "n": "参加一次线下活动"
   },
   {
    "id": "s10",
-   "cat": "social",
-   "name": "与人深度对话一次",
-   "cat_name": "社交关系"
+   "c": "social",
+   "f": "weekly",
+   "w": "both",
+   "n": "与人深度对话一次"
   },
   {
    "id": "r1",
-   "cat": "reflect",
-   "name": "写今日复盘 3 行",
-   "cat_name": "复盘反思"
+   "c": "reflect",
+   "f": "daily",
+   "w": "both",
+   "n": "写今日复盘 3 行"
   },
   {
    "id": "r2",
-   "cat": "reflect",
-   "name": "记录今日 1 件成就",
-   "cat_name": "复盘反思"
+   "c": "reflect",
+   "f": "daily",
+   "w": "both",
+   "n": "记录今日 1 件成就"
   },
   {
    "id": "r3",
-   "cat": "reflect",
-   "name": "记录 1 个改进点",
-   "cat_name": "复盘反思"
+   "c": "reflect",
+   "f": "daily",
+   "w": "both",
+   "n": "记录 1 个改进点"
   },
   {
    "id": "r4",
-   "cat": "reflect",
-   "name": "周复盘：目标 vs 实际",
-   "cat_name": "复盘反思"
+   "c": "reflect",
+   "f": "weekly",
+   "w": "both",
+   "n": "周复盘：目标 vs 实际"
   },
   {
    "id": "r5",
-   "cat": "reflect",
-   "name": "回顾月度目标进度",
-   "cat_name": "复盘反思"
+   "c": "reflect",
+   "f": "monthly",
+   "w": "both",
+   "n": "回顾月度目标进度"
   },
   {
    "id": "r6",
-   "cat": "reflect",
-   "name": "感恩复盘 3 条",
-   "cat_name": "复盘反思"
+   "c": "reflect",
+   "f": "daily",
+   "w": "both",
+   "n": "感恩复盘 3 条"
   },
   {
    "id": "r7",
-   "cat": "reflect",
-   "name": "复盘一次情绪事件",
-   "cat_name": "复盘反思"
+   "c": "reflect",
+   "f": "daily",
+   "w": "both",
+   "n": "复盘一次情绪事件"
   },
   {
    "id": "r8",
-   "cat": "reflect",
-   "name": "记录半小时段的时间去向",
-   "cat_name": "复盘反思"
+   "c": "reflect",
+   "f": "daily",
+   "w": "both",
+   "n": "记录半小时段的时间去向"
   },
   {
    "id": "r9",
-   "cat": "reflect",
-   "name": "自评本周习惯坚持度",
-   "cat_name": "复盘反思"
+   "c": "reflect",
+   "f": "weekly",
+   "w": "both",
+   "n": "自评本周习惯坚持度"
   },
   {
    "id": "r10",
-   "cat": "reflect",
-   "name": "把长期目标拆到本周",
-   "cat_name": "复盘反思"
+   "c": "reflect",
+   "f": "weekly",
+   "w": "both",
+   "n": "把长期目标拆到本周"
   },
   {
    "id": "t1",
-   "cat": "tidy",
-   "name": "清理桌面杂物",
-   "cat_name": "整理断舍离"
+   "c": "tidy",
+   "f": "daily",
+   "w": "workday",
+   "n": "清理桌面杂物"
   },
   {
    "id": "t2",
-   "cat": "tidy",
-   "name": "归档 10 封邮件",
-   "cat_name": "整理断舍离"
+   "c": "tidy",
+   "f": "weekly",
+   "w": "workday",
+   "n": "归档 10 封邮件"
   },
   {
    "id": "t3",
-   "cat": "tidy",
-   "name": "删除 50 张无用照片",
-   "cat_name": "整理断舍离"
+   "c": "tidy",
+   "f": "weekly",
+   "w": "workday",
+   "n": "删除 50 张无用照片"
   },
   {
    "id": "t4",
-   "cat": "tidy",
-   "name": "整理一个抽屉/柜格",
-   "cat_name": "整理断舍离"
+   "c": "tidy",
+   "f": "daily",
+   "w": "workday",
+   "n": "整理一个抽屉/柜格"
   },
   {
    "id": "t5",
-   "cat": "tidy",
-   "name": "清理微信缓存/群消息",
-   "cat_name": "整理断舍离"
+   "c": "tidy",
+   "f": "daily",
+   "w": "workday",
+   "n": "清理微信缓存/群消息"
   },
   {
    "id": "t6",
-   "cat": "tidy",
-   "name": "卸载一个无用 App",
-   "cat_name": "整理断舍离"
+   "c": "tidy",
+   "f": "monthly",
+   "w": "workday",
+   "n": "卸载一个无用 App"
   },
   {
    "id": "t7",
-   "cat": "tidy",
-   "name": "整理收藏夹/书签",
-   "cat_name": "整理断舍离"
+   "c": "tidy",
+   "f": "monthly",
+   "w": "workday",
+   "n": "整理收藏夹/书签"
   },
   {
    "id": "t8",
-   "cat": "tidy",
-   "name": "清理电脑下载文件夹",
-   "cat_name": "整理断舍离"
+   "c": "tidy",
+   "f": "weekly",
+   "w": "workday",
+   "n": "清理电脑下载文件夹"
   },
   {
    "id": "t9",
-   "cat": "tidy",
-   "name": "捐或扔一件闲置",
-   "cat_name": "整理断舍离"
+   "c": "tidy",
+   "f": "monthly",
+   "w": "workday",
+   "n": "捐或扔一件闲置"
   },
   {
    "id": "t10",
-   "cat": "tidy",
-   "name": "给物品分类归位",
-   "cat_name": "整理断舍离"
+   "c": "tidy",
+   "f": "daily",
+   "w": "workday",
+   "n": "给物品分类归位"
   },
   {
    "id": "p1",
-   "cat": "rest",
-   "name": "远眺绿植 60 秒",
-   "cat_name": "放松恢复"
+   "c": "rest",
+   "f": "daily",
+   "w": "both",
+   "n": "远眺绿植 60 秒"
   },
   {
    "id": "p2",
-   "cat": "rest",
-   "name": "闭目养神 5 分钟",
-   "cat_name": "放松恢复"
+   "c": "rest",
+   "f": "daily",
+   "w": "both",
+   "n": "闭目养神 5 分钟"
   },
   {
    "id": "p3",
-   "cat": "rest",
-   "name": "听一段白噪音/自然音",
-   "cat_name": "放松恢复"
+   "c": "rest",
+   "f": "daily",
+   "w": "both",
+   "n": "听一段白噪音/自然音"
   },
   {
    "id": "p4",
-   "cat": "rest",
-   "name": "泡一杯茶慢慢喝",
-   "cat_name": "放松恢复"
+   "c": "rest",
+   "f": "daily",
+   "w": "both",
+   "n": "泡一杯茶慢慢喝"
   },
   {
    "id": "p5",
-   "cat": "rest",
-   "name": "做 3 次深呼吸伸展",
-   "cat_name": "放松恢复"
+   "c": "rest",
+   "f": "daily",
+   "w": "both",
+   "n": "做 3 次深呼吸伸展"
   },
   {
    "id": "p6",
-   "cat": "rest",
-   "name": "揉按太阳穴/头皮",
-   "cat_name": "放松恢复"
+   "c": "rest",
+   "f": "daily",
+   "w": "both",
+   "n": "揉按太阳穴/头皮"
   },
   {
    "id": "p7",
-   "cat": "rest",
-   "name": "起身散步 5 分钟",
-   "cat_name": "放松恢复"
+   "c": "rest",
+   "f": "daily",
+   "w": "both",
+   "n": "起身散步 5 分钟"
   },
   {
    "id": "p8",
-   "cat": "rest",
-   "name": "发呆放空 2 分钟",
-   "cat_name": "放松恢复"
+   "c": "rest",
+   "f": "daily",
+   "w": "both",
+   "n": "发呆放空 2 分钟"
   },
   {
    "id": "p9",
-   "cat": "rest",
-   "name": "拉伸颈肩腰",
-   "cat_name": "放松恢复"
+   "c": "rest",
+   "f": "daily",
+   "w": "both",
+   "n": "拉伸颈肩腰"
   },
   {
    "id": "p10",
-   "cat": "rest",
-   "name": "睡前听轻音乐 10 分钟",
-   "cat_name": "放松恢复"
+   "c": "rest",
+   "f": "daily",
+   "w": "both",
+   "n": "睡前听轻音乐 10 分钟"
   }
  ]
 }

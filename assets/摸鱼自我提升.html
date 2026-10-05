@@ -103,6 +103,23 @@ input{font-family:inherit}
 .lib-item .add svg{width:15px;height:15px;stroke:var(--sub);fill:none;stroke-width:2.2}
 .lib-item .add.on{background:var(--accent-soft)}
 .lib-item .add.on svg{stroke:var(--accent-deep)}
+.lib-wrap{display:flex;gap:12px;align-items:flex-start}
+.lib-side{flex:none;width:78px;position:sticky;top:8px;display:flex;flex-direction:column;gap:4px;max-height:calc(100vh - 130px);overflow-y:auto;scrollbar-width:none;padding-bottom:20px}
+.lib-side::-webkit-scrollbar{display:none}
+.lib-side .side-btn{font-size:12.5px;text-align:left;padding:8px 10px;border-radius:10px;background:var(--card);color:var(--sub);box-shadow:var(--shadow);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+.lib-side .side-btn.on{background:var(--accent-soft);color:var(--accent-deep);font-weight:600}
+.lib-main{flex:1;min-width:0}
+.ident-bar,.freq-bar{display:flex;gap:6px;overflow-x:auto;margin-bottom:10px;scrollbar-width:none}
+.ident-bar::-webkit-scrollbar,.freq-bar::-webkit-scrollbar{display:none}
+.ident-chip,.freq-chip{flex:none;font-size:12px;padding:6px 12px;border-radius:16px;background:var(--card);color:var(--sub);box-shadow:var(--shadow);cursor:pointer}
+.ident-chip.on{background:var(--accent);color:#fff;font-weight:600}
+.freq-chip.on{background:var(--ink);color:#fff;font-weight:600}
+.add-custom{display:flex;gap:8px;background:var(--card);border-radius:12px;padding:9px 11px;box-shadow:var(--shadow);margin-bottom:10px;align-items:center}
+.add-custom input{flex:1;border:none;outline:none;background:none;font-size:13px;color:var(--ink)}
+.add-custom button{flex:none;font-size:12.5px;padding:6px 12px;border-radius:9px;background:var(--accent-soft);color:var(--accent-deep);font-weight:600;cursor:pointer}
+.lib-item .tag{flex:none;font-size:10.5px;color:var(--sub);background:var(--bg);border-radius:6px;padding:2px 6px}
+.lib-item .del{flex:none;width:24px;height:24px;border-radius:8px;background:var(--bg);color:var(--sub);font-size:14px;line-height:24px;text-align:center;cursor:pointer;padding:0}
+@media(min-width:760px){.lib-side{width:110px}}
 
 /* ===== 统计 ===== */
 .stat-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;margin-bottom:14px}
@@ -205,12 +222,27 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
 
   <!-- ===== 视图：清单库 ===== -->
   <main class="view" id="view-lib">
-    <div class="cats" id="catChips"></div>
-    <div class="search">
-      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
-      <input id="searchInput" type="text" placeholder="搜索碎片任务…" autocomplete="off">
+    <div class="lib-wrap">
+      <nav class="lib-side" id="libSide"></nav>
+      <div class="lib-main">
+        <div class="ident-bar" id="identBar"></div>
+        <div class="freq-bar" id="freqBar">
+          <button class="freq-chip on" data-f="all">全部</button>
+          <button class="freq-chip" data-f="daily">每天</button>
+          <button class="freq-chip" data-f="weekly">每周</button>
+          <button class="freq-chip" data-f="monthly">每月</button>
+        </div>
+        <div class="search">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+          <input id="searchInput" type="text" placeholder="搜索碎片任务…" autocomplete="off">
+        </div>
+        <div class="add-custom">
+          <input id="customInput" type="text" placeholder="+ 我的自定义任务，回车添加" autocomplete="off">
+          <button id="customBtn">添加</button>
+        </div>
+        <div class="lib-list" id="libList"></div>
+      </div>
     </div>
-    <div class="lib-list" id="libList"></div>
   </main>
 
   <!-- ===== 视图：统计 ===== -->
@@ -337,126 +369,126 @@ var CATS = [
   {id:"rest",name:"放松恢复",color:"#BFA87E"}
 ];
 var TASKS = [
-{id:"d1",c:"diet",n:"吃够 5 种颜色的蔬果"},
-{id:"d2",c:"diet",n:"喝够 8 杯水（记录）"},
-{id:"d3",c:"diet",n:"加一份蛋白质（蛋/豆/奶）"},
-{id:"d4",c:"diet",n:"吃一份完整水果"},
-{id:"d5",c:"diet",n:"饭前喝一杯温水"},
-{id:"d6",c:"diet",n:"记录今日一餐"},
-{id:"d7",c:"diet",n:"用无糖饮品替代含糖饮料"},
-{id:"d8",c:"diet",n:"吃一小把坚果"},
-{id:"d9",c:"diet",n:"午餐加一份绿叶菜"},
-{id:"d10",c:"diet",n:"细嚼慢咽吃完一顿饭"},
-{id:"m1",c:"move",n:"提踵 20 次"},
-{id:"m2",c:"move",n:"提肛（凯格尔）10 组"},
-{id:"m3",c:"move",n:"靠墙静蹲 60 秒"},
-{id:"m4",c:"move",n:"肩部绕环 30 秒"},
-{id:"m5",c:"move",n:"颈部左右拉伸"},
-{id:"m6",c:"move",n:"扩胸开肩 10 次"},
-{id:"m7",c:"move",n:"手腕放松绕环"},
-{id:"m8",c:"move",n:"眼保健操一套"},
-{id:"m9",c:"move",n:"踮脚尖走几步"},
-{id:"m10",c:"move",n:"工位深蹲 10 个"},
-{id:"e1",c:"mood",n:"写下 3 件感恩小事"},
-{id:"e2",c:"mood",n:"情绪日记写一句话"},
-{id:"e3",c:"mood",n:"3 分钟正念呼吸"},
-{id:"e4",c:"mood",n:"4-7-8 深呼吸 1 分钟"},
-{id:"e5",c:"mood",n:"听一首喜欢的歌"},
-{id:"e6",c:"mood",n:"给自己一句积极暗示"},
-{id:"e7",c:"mood",n:"写下烦恼并划掉一件可控的"},
-{id:"e8",c:"mood",n:"暂停 5 秒再回应消息"},
-{id:"e9",c:"mood",n:"微笑练习 30 秒"},
-{id:"e10",c:"mood",n:"给此刻情绪命名"},
-{id:"l1",c:"learn",n:"多邻国打卡"},
-{id:"l2",c:"learn",n:"背 10 个英语单词"},
-{id:"l3",c:"learn",n:"读 10 页书"},
-{id:"l4",c:"learn",n:"听一节播客"},
-{id:"l5",c:"learn",n:"看一篇行业文章"},
-{id:"l6",c:"learn",n:"学 1 个新概念并复述"},
-{id:"l7",c:"learn",n:"刷 10 道题/错题"},
-{id:"l8",c:"learn",n:"看一段 TED 演讲"},
-{id:"l9",c:"learn",n:"写 100 字学习笔记"},
-{id:"l10",c:"learn",n:"练 15 分钟新技能"},
-{id:"f1",c:"money",n:"记一笔今日支出"},
-{id:"f2",c:"money",n:"核对本周账单"},
-{id:"f3",c:"money",n:"定投一笔（基金/储蓄）"},
-{id:"f4",c:"money",n:"转存 10 元到梦想账户"},
-{id:"f5",c:"money",n:"取消一笔非必要订阅"},
-{id:"f6",c:"money",n:"看 1 篇理财科普"},
-{id:"f7",c:"money",n:"检查本月预算余量"},
-{id:"f8",c:"money",n:"给还款日设日历提醒"},
-{id:"f9",c:"money",n:"盘点一件闲置资产"},
-{id:"f10",c:"money",n:"写一句本周消费复盘"},
-{id:"w1",c:"work",n:"复盘当日工作 3 条"},
-{id:"w2",c:"work",n:"写明日待办清单"},
-{id:"w3",c:"work",n:"整理电脑桌面/文件夹"},
-{id:"w4",c:"work",n:"攒一条周报素材"},
-{id:"w5",c:"work",n:"给同事一条有用反馈"},
-{id:"w6",c:"work",n:"学一个职场技能点"},
-{id:"w7",c:"work",n:"更新一条人脉备注"},
-{id:"w8",c:"work",n:"读一条岗位相关 JD"},
-{id:"w9",c:"work",n:"记录一次会议要点"},
-{id:"w10",c:"work",n:"发一条进展同步"},
-{id:"h1",c:"health",n:"23 点前放下手机"},
-{id:"h2",c:"health",n:"午休闭眼 20 分钟"},
-{id:"h3",c:"health",n:"记录睡眠时长"},
-{id:"h4",c:"health",n:"睡前 1 小时不进食"},
-{id:"h5",c:"health",n:"晒 10 分钟太阳"},
-{id:"h6",c:"health",n:"吃今日维生素/补剂"},
-{id:"h7",c:"health",n:"每小时起身活动 1 次"},
-{id:"h8",c:"health",n:"22:30 前入睡打卡"},
-{id:"h9",c:"health",n:"睡前拉伸 5 分钟"},
-{id:"h10",c:"health",n:"晨起喝一杯温水并记录"},
-{id:"i1",c:"hobby",n:"画一幅小涂鸦"},
-{id:"i2",c:"hobby",n:"写一段心情日记"},
-{id:"i3",c:"hobby",n:"拍一张今日照片"},
-{id:"i4",c:"hobby",n:"练 10 分钟字"},
-{id:"i5",c:"hobby",n:"学一首歌的副歌"},
-{id:"i6",c:"hobby",n:"做一个小手工"},
-{id:"i7",c:"hobby",n:"记录一个灵感点子"},
-{id:"i8",c:"hobby",n:"整理手机相册 10 张"},
-{id:"i9",c:"hobby",n:"学一个摄影构图技巧"},
-{id:"i10",c:"hobby",n:"发一条原创社交媒体内容"},
-{id:"s1",c:"social",n:"给家人发一条消息"},
-{id:"s2",c:"social",n:"给朋友点赞评论"},
-{id:"s3",c:"social",n:"主动邀约一个人吃饭/散步"},
-{id:"s4",c:"social",n:"给帮助过你的人道谢"},
-{id:"s5",c:"social",n:"专注听人说完一次"},
-{id:"s6",c:"social",n:"记录一个朋友生日"},
-{id:"s7",c:"social",n:"整理通讯录加备注"},
-{id:"s8",c:"social",n:"发一条问候"},
-{id:"s9",c:"social",n:"参加一次线下活动"},
-{id:"s10",c:"social",n:"与人深度对话一次"},
-{id:"r1",c:"reflect",n:"写今日复盘 3 行"},
-{id:"r2",c:"reflect",n:"记录今日 1 件成就"},
-{id:"r3",c:"reflect",n:"记录 1 个改进点"},
-{id:"r4",c:"reflect",n:"周复盘：目标 vs 实际"},
-{id:"r5",c:"reflect",n:"回顾月度目标进度"},
-{id:"r6",c:"reflect",n:"感恩复盘 3 条"},
-{id:"r7",c:"reflect",n:"复盘一次情绪事件"},
-{id:"r8",c:"reflect",n:"记录半小时段的时间去向"},
-{id:"r9",c:"reflect",n:"自评本周习惯坚持度"},
-{id:"r10",c:"reflect",n:"把长期目标拆到本周"},
-{id:"t1",c:"tidy",n:"清理桌面杂物"},
-{id:"t2",c:"tidy",n:"归档 10 封邮件"},
-{id:"t3",c:"tidy",n:"删除 50 张无用照片"},
-{id:"t4",c:"tidy",n:"整理一个抽屉/柜格"},
-{id:"t5",c:"tidy",n:"清理微信缓存/群消息"},
-{id:"t6",c:"tidy",n:"卸载一个无用 App"},
-{id:"t7",c:"tidy",n:"整理收藏夹/书签"},
-{id:"t8",c:"tidy",n:"清理电脑下载文件夹"},
-{id:"t9",c:"tidy",n:"捐或扔一件闲置"},
-{id:"t10",c:"tidy",n:"给物品分类归位"},
-{id:"p1",c:"rest",n:"远眺绿植 60 秒"},
-{id:"p2",c:"rest",n:"闭目养神 5 分钟"},
-{id:"p3",c:"rest",n:"听一段白噪音/自然音"},
-{id:"p4",c:"rest",n:"泡一杯茶慢慢喝"},
-{id:"p5",c:"rest",n:"做 3 次深呼吸伸展"},
-{id:"p6",c:"rest",n:"揉按太阳穴/头皮"},
-{id:"p7",c:"rest",n:"起身散步 5 分钟"},
-{id:"p8",c:"rest",n:"发呆放空 2 分钟"},
-{id:"p9",c:"rest",n:"拉伸颈肩腰"},
-{id:"p10",c:"rest",n:"睡前听轻音乐 10 分钟"}
+{id:"d1",c:"diet",f:"daily",w:"both",n:"吃够 5 种颜色的蔬果"},
+{id:"d2",c:"diet",f:"daily",w:"both",n:"喝够 8 杯水（记录）"},
+{id:"d3",c:"diet",f:"daily",w:"both",n:"加一份蛋白质（蛋/豆/奶）"},
+{id:"d4",c:"diet",f:"daily",w:"both",n:"吃一份完整水果"},
+{id:"d5",c:"diet",f:"daily",w:"both",n:"饭前喝一杯温水"},
+{id:"d6",c:"diet",f:"daily",w:"both",n:"记录今日一餐"},
+{id:"d7",c:"diet",f:"daily",w:"both",n:"用无糖饮品替代含糖饮料"},
+{id:"d8",c:"diet",f:"daily",w:"both",n:"吃一小把坚果"},
+{id:"d9",c:"diet",f:"daily",w:"both",n:"午餐加一份绿叶菜"},
+{id:"d10",c:"diet",f:"daily",w:"both",n:"细嚼慢咽吃完一顿饭"},
+{id:"m1",c:"move",f:"daily",w:"workday",n:"提踵 20 次"},
+{id:"m2",c:"move",f:"daily",w:"workday",n:"提肛（凯格尔）10 组"},
+{id:"m3",c:"move",f:"daily",w:"workday",n:"靠墙静蹲 60 秒"},
+{id:"m4",c:"move",f:"daily",w:"workday",n:"肩部绕环 30 秒"},
+{id:"m5",c:"move",f:"daily",w:"workday",n:"颈部左右拉伸"},
+{id:"m6",c:"move",f:"daily",w:"workday",n:"扩胸开肩 10 次"},
+{id:"m7",c:"move",f:"daily",w:"workday",n:"手腕放松绕环"},
+{id:"m8",c:"move",f:"daily",w:"workday",n:"眼保健操一套"},
+{id:"m9",c:"move",f:"daily",w:"workday",n:"踮脚尖走几步"},
+{id:"m10",c:"move",f:"daily",w:"workday",n:"工位深蹲 10 个"},
+{id:"e1",c:"mood",f:"daily",w:"both",n:"写下 3 件感恩小事"},
+{id:"e2",c:"mood",f:"daily",w:"both",n:"情绪日记写一句话"},
+{id:"e3",c:"mood",f:"daily",w:"both",n:"3 分钟正念呼吸"},
+{id:"e4",c:"mood",f:"daily",w:"both",n:"4-7-8 深呼吸 1 分钟"},
+{id:"e5",c:"mood",f:"daily",w:"both",n:"听一首喜欢的歌"},
+{id:"e6",c:"mood",f:"daily",w:"both",n:"给自己一句积极暗示"},
+{id:"e7",c:"mood",f:"daily",w:"both",n:"写下烦恼并划掉一件可控的"},
+{id:"e8",c:"mood",f:"daily",w:"both",n:"暂停 5 秒再回应消息"},
+{id:"e9",c:"mood",f:"daily",w:"both",n:"微笑练习 30 秒"},
+{id:"e10",c:"mood",f:"daily",w:"both",n:"给此刻情绪命名"},
+{id:"l1",c:"learn",f:"daily",w:"both",n:"多邻国打卡"},
+{id:"l2",c:"learn",f:"daily",w:"both",n:"背 10 个英语单词"},
+{id:"l3",c:"learn",f:"daily",w:"both",n:"读 10 页书"},
+{id:"l4",c:"learn",f:"daily",w:"both",n:"听一节播客"},
+{id:"l5",c:"learn",f:"daily",w:"both",n:"看一篇行业文章"},
+{id:"l6",c:"learn",f:"daily",w:"both",n:"学 1 个新概念并复述"},
+{id:"l7",c:"learn",f:"daily",w:"both",n:"刷 10 道题/错题"},
+{id:"l8",c:"learn",f:"weekly",w:"both",n:"看一段 TED 演讲"},
+{id:"l9",c:"learn",f:"daily",w:"both",n:"写 100 字学习笔记"},
+{id:"l10",c:"learn",f:"daily",w:"both",n:"练 15 分钟新技能"},
+{id:"f1",c:"money",f:"daily",w:"both",n:"记一笔今日支出"},
+{id:"f2",c:"money",f:"weekly",w:"both",n:"核对本周账单"},
+{id:"f3",c:"money",f:"weekly",w:"both",n:"定投一笔（基金/储蓄）"},
+{id:"f4",c:"money",f:"daily",w:"both",n:"转存 10 元到梦想账户"},
+{id:"f5",c:"money",f:"monthly",w:"both",n:"取消一笔非必要订阅"},
+{id:"f6",c:"money",f:"daily",w:"both",n:"看 1 篇理财科普"},
+{id:"f7",c:"money",f:"monthly",w:"both",n:"检查本月预算余量"},
+{id:"f8",c:"money",f:"daily",w:"both",n:"给还款日设日历提醒"},
+{id:"f9",c:"money",f:"monthly",w:"both",n:"盘点一件闲置资产"},
+{id:"f10",c:"money",f:"weekly",w:"both",n:"写一句本周消费复盘"},
+{id:"w1",c:"work",f:"daily",w:"workday",n:"复盘当日工作 3 条"},
+{id:"w2",c:"work",f:"daily",w:"workday",n:"写明日待办清单"},
+{id:"w3",c:"work",f:"daily",w:"workday",n:"整理电脑桌面/文件夹"},
+{id:"w4",c:"work",f:"weekly",w:"workday",n:"攒一条周报素材"},
+{id:"w5",c:"work",f:"weekly",w:"workday",n:"给同事一条有用反馈"},
+{id:"w6",c:"work",f:"daily",w:"workday",n:"学一个职场技能点"},
+{id:"w7",c:"work",f:"monthly",w:"workday",n:"更新一条人脉备注"},
+{id:"w8",c:"work",f:"daily",w:"workday",n:"读一条岗位相关 JD"},
+{id:"w9",c:"work",f:"daily",w:"workday",n:"记录一次会议要点"},
+{id:"w10",c:"work",f:"daily",w:"workday",n:"发一条进展同步"},
+{id:"h1",c:"health",f:"daily",w:"both",n:"23 点前放下手机"},
+{id:"h2",c:"health",f:"daily",w:"both",n:"午休闭眼 20 分钟"},
+{id:"h3",c:"health",f:"daily",w:"both",n:"记录睡眠时长"},
+{id:"h4",c:"health",f:"daily",w:"both",n:"睡前 1 小时不进食"},
+{id:"h5",c:"health",f:"daily",w:"both",n:"晒 10 分钟太阳"},
+{id:"h6",c:"health",f:"daily",w:"both",n:"吃今日维生素/补剂"},
+{id:"h7",c:"health",f:"daily",w:"both",n:"每小时起身活动 1 次"},
+{id:"h8",c:"health",f:"daily",w:"both",n:"22:30 前入睡打卡"},
+{id:"h9",c:"health",f:"daily",w:"both",n:"睡前拉伸 5 分钟"},
+{id:"h10",c:"health",f:"daily",w:"both",n:"晨起喝一杯温水并记录"},
+{id:"i1",c:"hobby",f:"daily",w:"rest",n:"画一幅小涂鸦"},
+{id:"i2",c:"hobby",f:"daily",w:"rest",n:"写一段心情日记"},
+{id:"i3",c:"hobby",f:"daily",w:"rest",n:"拍一张今日照片"},
+{id:"i4",c:"hobby",f:"daily",w:"rest",n:"练 10 分钟字"},
+{id:"i5",c:"hobby",f:"daily",w:"rest",n:"学一首歌的副歌"},
+{id:"i6",c:"hobby",f:"daily",w:"rest",n:"做一个小手工"},
+{id:"i7",c:"hobby",f:"daily",w:"rest",n:"记录一个灵感点子"},
+{id:"i8",c:"hobby",f:"weekly",w:"rest",n:"整理手机相册 10 张"},
+{id:"i9",c:"hobby",f:"daily",w:"rest",n:"学一个摄影构图技巧"},
+{id:"i10",c:"hobby",f:"weekly",w:"rest",n:"发一条原创社交媒体内容"},
+{id:"s1",c:"social",f:"daily",w:"both",n:"给家人发一条消息"},
+{id:"s2",c:"social",f:"daily",w:"both",n:"给朋友点赞评论"},
+{id:"s3",c:"social",f:"weekly",w:"both",n:"主动邀约一个人吃饭/散步"},
+{id:"s4",c:"social",f:"daily",w:"both",n:"给帮助过你的人道谢"},
+{id:"s5",c:"social",f:"daily",w:"both",n:"专注听人说完一次"},
+{id:"s6",c:"social",f:"monthly",w:"both",n:"记录一个朋友生日"},
+{id:"s7",c:"social",f:"monthly",w:"both",n:"整理通讯录加备注"},
+{id:"s8",c:"social",f:"daily",w:"both",n:"发一条问候"},
+{id:"s9",c:"social",f:"monthly",w:"both",n:"参加一次线下活动"},
+{id:"s10",c:"social",f:"weekly",w:"both",n:"与人深度对话一次"},
+{id:"r1",c:"reflect",f:"daily",w:"both",n:"写今日复盘 3 行"},
+{id:"r2",c:"reflect",f:"daily",w:"both",n:"记录今日 1 件成就"},
+{id:"r3",c:"reflect",f:"daily",w:"both",n:"记录 1 个改进点"},
+{id:"r4",c:"reflect",f:"weekly",w:"both",n:"周复盘：目标 vs 实际"},
+{id:"r5",c:"reflect",f:"monthly",w:"both",n:"回顾月度目标进度"},
+{id:"r6",c:"reflect",f:"daily",w:"both",n:"感恩复盘 3 条"},
+{id:"r7",c:"reflect",f:"daily",w:"both",n:"复盘一次情绪事件"},
+{id:"r8",c:"reflect",f:"daily",w:"both",n:"记录半小时段的时间去向"},
+{id:"r9",c:"reflect",f:"weekly",w:"both",n:"自评本周习惯坚持度"},
+{id:"r10",c:"reflect",f:"weekly",w:"both",n:"把长期目标拆到本周"},
+{id:"t1",c:"tidy",f:"daily",w:"workday",n:"清理桌面杂物"},
+{id:"t2",c:"tidy",f:"weekly",w:"workday",n:"归档 10 封邮件"},
+{id:"t3",c:"tidy",f:"weekly",w:"workday",n:"删除 50 张无用照片"},
+{id:"t4",c:"tidy",f:"daily",w:"workday",n:"整理一个抽屉/柜格"},
+{id:"t5",c:"tidy",f:"daily",w:"workday",n:"清理微信缓存/群消息"},
+{id:"t6",c:"tidy",f:"monthly",w:"workday",n:"卸载一个无用 App"},
+{id:"t7",c:"tidy",f:"monthly",w:"workday",n:"整理收藏夹/书签"},
+{id:"t8",c:"tidy",f:"weekly",w:"workday",n:"清理电脑下载文件夹"},
+{id:"t9",c:"tidy",f:"monthly",w:"workday",n:"捐或扔一件闲置"},
+{id:"t10",c:"tidy",f:"daily",w:"workday",n:"给物品分类归位"},
+{id:"p1",c:"rest",f:"daily",w:"both",n:"远眺绿植 60 秒"},
+{id:"p2",c:"rest",f:"daily",w:"both",n:"闭目养神 5 分钟"},
+{id:"p3",c:"rest",f:"daily",w:"both",n:"听一段白噪音/自然音"},
+{id:"p4",c:"rest",f:"daily",w:"both",n:"泡一杯茶慢慢喝"},
+{id:"p5",c:"rest",f:"daily",w:"both",n:"做 3 次深呼吸伸展"},
+{id:"p6",c:"rest",f:"daily",w:"both",n:"揉按太阳穴/头皮"},
+{id:"p7",c:"rest",f:"daily",w:"both",n:"起身散步 5 分钟"},
+{id:"p8",c:"rest",f:"daily",w:"both",n:"发呆放空 2 分钟"},
+{id:"p9",c:"rest",f:"daily",w:"both",n:"拉伸颈肩腰"},
+{id:"p10",c:"rest",f:"daily",w:"both",n:"睡前听轻音乐 10 分钟"}
 ];
 /* ===== 状态管理 ===== */
 var LS_KEY = "moyu-app-v1";
@@ -467,11 +499,13 @@ function loadState(){
     if(!s.goal) s.goal = 5;
     if(!s.remind) s.remind = 1;           // 0 不提醒 1 温和 2 强
     if(!s.remindHour) s.remindHour = 19;
-    if(!s.today) s.today = {};            // 当日待办 { "d1":true }
+    if(!s.today) s.today = {};            // 持久自选任务集 { "d1":true }
     if(!s.fav) s.fav = [];
-    if(!s.syncTs) s.syncTs = 0;           // 上次同步时间戳
+    if(!s.custom) s.custom = [];          // 用户自定义任务 [{id,c,f,w,n}]
+    if(!s.identity) s.identity = "";      // 身份："" 不限 / worker / student / exam / freelance
+    if(!s.syncTs) s.syncTs = 0;
     return s;
-  }catch(e){ return {records:{},goal:5,remind:1,remindHour:19,today:{},fav:[],syncTs:0}; }
+  }catch(e){ return {records:{},goal:5,remind:1,remindHour:19,today:{},fav:[],custom:[],identity:"",syncTs:0}; }
 }
 var state = loadState();
 function save(){ localStorage.setItem(LS_KEY, JSON.stringify(state)); schedulePush(); }
@@ -481,7 +515,12 @@ function fmtDate(d){ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(
 function todayStr(){ return fmtDate(new Date()); }
 var WEEK = ["日","一","二","三","四","五","六"];
 function catById(id){ for(var i=0;i<CATS.length;i++) if(CATS[i].id===id) return CATS[i]; return {name:"其他",color:"#999"}; }
-function taskById(id){ for(var i=0;i<TASKS.length;i++) if(TASKS[i].id===id) return TASKS[i]; return null; }
+function taskById(id){
+  for(var i=0;i<TASKS.length;i++) if(TASKS[i].id===id) return TASKS[i];
+  if(state.custom) for(var j=0;j<state.custom.length;j++) if(state.custom[j].id===id) return state.custom[j];
+  return null;
+}
+function allTasks(){ return TASKS.concat(state.custom||[]); }
 
 /* ===== 视图路由 ===== */
 function switchView(v){
@@ -492,7 +531,7 @@ function switchView(v){
   var tabs = document.querySelectorAll("#tabbar .tab");
   for(var j=0;j<tabs.length;j++) tabs[j].classList.toggle("on", tabs[j].getAttribute("data-v")===v);
   if(v==="stats") renderStats();
-  if(v==="lib") renderLib();
+  if(v==="lib"){ renderSide(); renderIdent(); renderLib(); }
   if(v==="set") renderSet();
   if(v==="sync") renderSync();
   window.scrollTo(0,0);
@@ -525,22 +564,13 @@ function weekOfYear(d){
 
 /* ===== 今日清单 ===== */
 function ensureToday(){
-  var t = todayStr();
-  if(!state.records[t]){
-    // 首次打开：自动挑几条默认任务
+  // state.today 是持久自选任务集，每天不再重置；仅首次使用（无自选且无任何历史记录）时给默认推荐
+  var hasSel = false; for(var k in state.today){ hasSel = true; break; }
+  var hasRec = false; for(var d in state.records){ if(state.records[d] && state.records[d].length){ hasRec = true; break; } }
+  if(!hasSel && !hasRec){
     var pool = ["d1","m3","l2","p4","r1","m8","l5"];
-    var picked = [];
-    for(var i=0;i<state.goal && i<pool.length;i++) picked.push(pool[i]);
     state.today = {};
-    for(var j=0;j<picked.length;j++) state.today[picked[j]] = false;
-  } else {
-    // 保留未完成任务到当天
-    var prev = state.records[t];
-    var kept = {};
-    for(var k in state.today){
-      if(prev.indexOf(k) === -1) kept[k] = false;
-    }
-    state.today = kept;
+    for(var j=0;j<pool.length;j++) state.today[pool[j]] = false;
   }
   save();
 }
@@ -597,7 +627,7 @@ function taskHTML(id, tk, isDone){
   return '<div class="task'+(isDone?" done":"")+'" data-id="'+id+'">'+
     '<div class="check"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg></div>'+
     '<div class="t-main"><div class="t-name">'+tk.n+'</div><div class="t-cat"><span class="cat-dot" style="background:'+c.color+'"></span>'+c.name+'</div></div>'+
-    '<div class="t-time">约 3–15 分钟</div></div>';
+    '<div class="t-time">'+(tk.f==="monthly"?"每月":tk.f==="weekly"?"每周":"每天")+'</div></div>';
 }
 document.getElementById("todayList").addEventListener("click", function(e){
   var card = e.target.closest ? e.target.closest(".task") : null;
@@ -630,20 +660,61 @@ document.getElementById("suggestBtn").addEventListener("click", function(){
 
 /* ===== 清单库 ===== */
 var libCat = "all";
+var libFreq = "all";
 var libKw = "";
-function renderCatChips(){
-  var html = '<button class="cat-chip on" data-c="all">全部 120</button>';
+var FNAME = {daily:"每天",weekly:"每周",monthly:"每月"};
+var IDENTS = [["","不限"],["worker","打工人"],["student","学生党"],["exam","考公考研"],["freelance","自由职业"]];
+var IDENT_PRESET = {
+  worker:["d2","m1","m2","m5","e3","l5","f1","w1","r1","p1","p7","h2","t2"],
+  student:["d2","m8","e3","l1","l2","l3","l7","f1","r1","p1","h3","s2"],
+  exam:["d2","e3","l2","l7","l9","r1","p1","h1","h3","p5"],
+  freelance:["d2","f1","w1","w2","l4","l10","r1","r10","s3","h5","p4","i7"]
+};
+function renderSide(){
+  var html = '<button class="side-btn'+(libCat==="all"?" on":"")+'" data-c="all">全部</button>';
   for(var i=0;i<CATS.length;i++){
-    html += '<button class="cat-chip" data-c="'+CATS[i].id+'">'+CATS[i].name+'</button>';
+    html += '<button class="side-btn'+(libCat===CATS[i].id?" on":"")+'" data-c="'+CATS[i].id+'">'+CATS[i].name+'</button>';
   }
-  document.getElementById("catChips").innerHTML = html;
+  document.getElementById("libSide").innerHTML = html;
 }
-document.getElementById("catChips").addEventListener("click", function(e){
-  var chip = e.target.closest ? e.target.closest(".cat-chip") : null;
-  if(!chip) return;
-  libCat = chip.getAttribute("data-c");
-  var chips = document.querySelectorAll(".cat-chip");
-  for(var i=0;i<chips.length;i++) chips[i].classList.toggle("on", chips[i]===chip);
+function renderIdent(){
+  var html = "";
+  for(var i=0;i<IDENTS.length;i++){
+    html += '<button class="ident-chip'+(state.identity===IDENTS[i][0]?" on":"")+'" data-idn="'+IDENTS[i][0]+'">'+IDENTS[i][1]+'</button>';
+  }
+  document.getElementById("identBar").innerHTML = html;
+}
+document.getElementById("libSide").addEventListener("click", function(e){
+  var b = e.target.closest ? e.target.closest(".side-btn") : null;
+  if(!b) return;
+  libCat = b.getAttribute("data-c");
+  var btns = document.querySelectorAll(".side-btn");
+  for(var i=0;i<btns.length;i++) btns[i].classList.toggle("on", btns[i]===b);
+  renderLib();
+});
+document.getElementById("freqBar").addEventListener("click", function(e){
+  var b = e.target.closest ? e.target.closest(".freq-chip") : null;
+  if(!b) return;
+  libFreq = b.getAttribute("data-f");
+  var btns = document.querySelectorAll(".freq-chip");
+  for(var i=0;i<btns.length;i++) btns[i].classList.toggle("on", btns[i]===b);
+  renderLib();
+});
+document.getElementById("identBar").addEventListener("click", function(e){
+  var b = e.target.closest ? e.target.closest(".ident-chip") : null;
+  if(!b) return;
+  state.identity = b.getAttribute("data-idn");
+  var btns = document.querySelectorAll(".ident-chip");
+  for(var i=0;i<btns.length;i++) btns[i].classList.toggle("on", btns[i]===b);
+  save();
+  if(state.identity && IDENT_PRESET[state.identity]){
+    var added = 0;
+    for(var j=0;j<IDENT_PRESET[state.identity].length;j++){
+      var tid = IDENT_PRESET[state.identity][j];
+      if(state.today[tid] === undefined){ state.today[tid] = false; added++; }
+    }
+    toast(added ? "已按你的身份推荐 "+added+" 件事" : "推荐任务都已在清单里了");
+  }
   renderLib();
 });
 document.getElementById("searchInput").addEventListener("input", function(e){
@@ -651,24 +722,35 @@ document.getElementById("searchInput").addEventListener("input", function(e){
   renderLib();
 });
 function renderLib(){
+  var list = allTasks();
   var html = "";
-  var count = 0;
-  for(var i=0;i<TASKS.length;i++){
-    var tk = TASKS[i];
+  for(var i=0;i<list.length;i++){
+    var tk = list[i];
     if(libCat!=="all" && tk.c!==libCat) continue;
+    if(libFreq!=="all" && tk.f!==libFreq) continue;
     if(libKw && tk.n.indexOf(libKw)===-1) continue;
-    count++;
     var inToday = state.today[tk.id] !== undefined;
     var c = catById(tk.c);
-    html += '<div class="lib-item" data-id="'+tk.id+'">'+
+    var isCustom = tk.id.charAt(0)==="c";
+    html += '<div class="lib-item" data-id="'+tk.id+'" data-cat="'+tk.c+'">'+
       '<span class="cat-dot" style="background:'+c.color+';flex:none"></span>'+
       '<span class="nm">'+tk.n+'</span>'+
+      '<span class="tag">'+(FNAME[tk.f]||"每天")+'</span>'+
+      (isCustom ? '<button class="del" data-del="'+tk.id+'">×</button>' : '')+
       '<button class="add'+(inToday?" on":"")+'" data-id="'+tk.id+'"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>'+
       '</div>';
   }
   document.getElementById("libList").innerHTML = html || '<div class="empty"><b>没有找到</b>换个关键词试试</div>';
 }
 document.getElementById("libList").addEventListener("click", function(e){
+  var del = e.target.closest ? e.target.closest(".del") : null;
+  if(del){
+    var did = del.getAttribute("data-del");
+    state.custom = state.custom.filter(function(x){ return x.id!==did; });
+    delete state.today[did];
+    save(); renderLib(); toast("已删除自定义任务");
+    return;
+  }
   var btn = e.target.closest ? e.target.closest(".add") : null;
   if(!btn) return;
   var id = btn.getAttribute("data-id");
@@ -680,6 +762,33 @@ document.getElementById("libList").addEventListener("click", function(e){
   save();
   renderLib();
   toast(state.today[id]!==undefined ? "已加入今日清单" : "已移出今日清单");
+});
+function addCustom(){
+  var inp = document.getElementById("customInput");
+  var v = inp.value.trim();
+  if(!v) return;
+  var cid = "c"+Date.now();
+  state.custom.push({id:cid, c:"learn", f:"daily", w:"both", n:v});
+  state.today[cid] = false;
+  inp.value = "";
+  save(); renderIdent(); renderLib(); toast("已添加并加入今日清单");
+}
+document.getElementById("customBtn").addEventListener("click", addCustom);
+document.getElementById("customInput").addEventListener("keydown", function(e){ if(e.key==="Enter") addCustom(); });
+/* 右侧滚动联动左侧导航 */
+window.addEventListener("scroll", function(){
+  if(!document.getElementById("view-lib").classList.contains("on")) return;
+  var items = document.querySelectorAll("#libList .lib-item");
+  if(!items.length) return;
+  var cur = null;
+  for(var i=0;i<items.length;i++){
+    var r = items[i].getBoundingClientRect();
+    if(r.top < 140){ cur = items[i].getAttribute("data-cat"); } else break;
+  }
+  if(cur){
+    var btns = document.querySelectorAll("#libSide .side-btn");
+    for(var j=0;j<btns.length;j++) btns[j].classList.toggle("on", btns[j].getAttribute("data-c")===cur);
+  }
 });
 
 /* ===== 统计 ===== */
@@ -887,7 +996,7 @@ function buildSyncData(){
   }
   var today = [];
   for(var k in state.today) today.push(k);
-  return {v:1, ts:Date.now(), records:rec, today:today, goal:state.goal, remind:state.remind, remindHour:state.remindHour};
+  return {v:1, ts:Date.now(), records:rec, today:today, goal:state.goal, remind:state.remind, remindHour:state.remindHour, custom:state.custom, identity:state.identity};
 }
 function buildSyncText(){
   return "MOYUSYNC1:" + JSON.stringify(buildSyncData());
@@ -918,6 +1027,8 @@ function mergeSyncData(d){
     if(d.goal) state.goal = d.goal;
     if(d.remind!==undefined) state.remind = d.remind;
     if(d.remindHour!==undefined) state.remindHour = d.remindHour;
+    if(d.custom) state.custom = d.custom;
+    if(d.identity) state.identity = d.identity;
   }
   state.syncTs = Math.max(newTs, state.syncTs||0);
   save();
