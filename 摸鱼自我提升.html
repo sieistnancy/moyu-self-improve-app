@@ -13,13 +13,23 @@
 <link rel="apple-touch-icon" href="icon-192.png">
 <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
 <style>
-:root{
+:root, body[data-theme="warm"]{
   --bg:#FAF7F2; --card:#FFFFFF; --ink:#2B2A28; --sub:#8A857C; --line:#ECE7DE;
   --accent:#E8926B; --accent-deep:#C96F4A; --accent-soft:#F9E8DD;
   --c-diet:#8FA98F; --c-move:#8FA8C8; --c-mood:#D9A5A0; --c-learn:#C9A86A;
   --c-money:#B39BC8; --c-work:#7FA8A0; --c-health:#D4A56E; --c-hobby:#C8918F;
   --c-social:#9BA6C8; --c-reflect:#8FA6B8; --c-tidy:#A5A08A; --c-rest:#BFA87E;
   --radius:18px; --shadow:0 1px 3px rgba(43,42,40,.05);
+}
+body[data-theme="cool"]{
+  --bg:#F2F6FB; --card:#FFFFFF; --ink:#22303F; --sub:#7A8899; --line:#E2E9F1;
+  --accent:#5B8FD6; --accent-deep:#3D6FB8; --accent-soft:#DFE9F7;
+  --shadow:0 1px 3px rgba(34,48,63,.06);
+}
+body[data-theme="moss"]{
+  --bg:#F1F4EC; --card:#FFFFFF; --ink:#2B3329; --sub:#7E8878; --line:#E3E9DC;
+  --accent:#6E9B7A; --accent-deep:#4F7A5C; --accent-soft:#DDE8DB;
+  --shadow:0 1px 3px rgba(43,51,41,.06);
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{font-size:16px}
@@ -54,6 +64,14 @@ input{font-family:inherit}
 .streak .item b{font-size:20px;display:block;line-height:1.2}
 .streak .item span{font-size:11px;color:var(--sub)}
 .streak .item.hot b{color:var(--accent-deep)}
+.mini-progress{display:flex;gap:10px;margin-top:12px}
+.mp{flex:1;display:flex;align-items:center;gap:8px;background:var(--bg);border-radius:12px;padding:8px 10px}
+.mp-ring{width:36px;height:36px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;background:conic-gradient(var(--accent) 0deg, var(--line) 0deg)}
+.mp-ring span{width:28px;height:28px;background:var(--card);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--ink)}
+.mp-txt b{font-size:14px;display:block;line-height:1.1}
+.mp-txt span{font-size:10px;color:var(--sub)}
+.group-title{display:flex;align-items:center;justify-content:space-between;padding:14px 6px 8px;font-size:13px;font-weight:700;color:var(--ink);grid-column:1/-1}
+.group-title span{font-size:11px;color:var(--sub);font-weight:400}
 .suggest{display:flex;align-items:center;gap:10px;background:var(--accent-soft);border-radius:14px;padding:12px 14px;margin-bottom:16px;font-size:13px;color:#7A4A33}
 .suggest b{font-weight:700}
 .suggest button{margin-left:auto;background:var(--accent);color:#fff;font-size:12px;padding:7px 12px;border-radius:20px;flex:none}
@@ -117,6 +135,7 @@ input{font-family:inherit}
 .add-custom{display:flex;gap:8px;background:var(--card);border-radius:12px;padding:9px 11px;box-shadow:var(--shadow);margin-bottom:10px;align-items:center}
 .add-custom input{flex:1;border:none;outline:none;background:none;font-size:13px;color:var(--ink)}
 .add-custom button{flex:none;font-size:12.5px;padding:6px 12px;border-radius:9px;background:var(--accent-soft);color:var(--accent-deep);font-weight:600;cursor:pointer}
+.add-custom #freqPick{background:var(--bg);color:var(--sub);font-weight:500}
 .lib-item .tag{flex:none;font-size:10.5px;color:var(--sub);background:var(--bg);border-radius:6px;padding:2px 6px}
 .lib-item .del{flex:none;width:24px;height:24px;border-radius:8px;background:var(--bg);color:var(--sub);font-size:14px;line-height:24px;text-align:center;cursor:pointer;padding:0}
 @media(min-width:760px){.lib-side{width:110px}}
@@ -127,7 +146,8 @@ input{font-family:inherit}
 .stat-card .sub{font-size:12px;color:var(--sub);margin-bottom:12px}
 .heat-wrap{overflow-x:auto}
 .heat{display:grid;grid-auto-flow:column;grid-template-rows:repeat(7,1fr);gap:4px;min-width:520px;padding-bottom:4px}
-.heat .cell{width:17px;height:17px;border-radius:4px;background:var(--line)}
+.heat .cell{width:17px;height:17px;border-radius:4px;background:var(--line);display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--sub)}
+.heat .cell.l1,.heat .cell.l2,.heat .cell.l3,.heat .cell.l4{color:#fff}
 .heat .cell.l1{background:#F6DFD2}
 .heat .cell.l2{background:#EFC3AC}
 .heat .cell.l3{background:#E8A788}
@@ -206,6 +226,10 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
       <div class="hero-info">
         <div class="h1" id="todayCount">今天 0 / 0 项</div>
         <div class="h2" id="todayHint">选几条小事，填满摸鱼时间</div>
+        <div class="mini-progress">
+          <div class="mp"><div class="mp-ring" id="weekRing"><span id="weekRingNum">0</span></div><div class="mp-txt"><b id="weekCount">0/0</b><span>本周进度</span></div></div>
+          <div class="mp"><div class="mp-ring" id="monthRing"><span id="monthRingNum">0</span></div><div class="mp-txt"><b id="monthCount">0/0</b><span>本月进度</span></div></div>
+        </div>
         <div class="streak">
           <div class="item hot"><b id="sDays">0</b><span>连续打卡</span></div>
           <div class="item"><b id="sRate">0%</b><span>本周完成率</span></div>
@@ -238,6 +262,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         </div>
         <div class="add-custom">
           <input id="customInput" type="text" placeholder="+ 我的自定义任务，回车添加" autocomplete="off">
+          <button id="freqPick" type="button">每天</button>
           <button id="customBtn">添加</button>
         </div>
         <div class="lib-list" id="libList"></div>
@@ -271,6 +296,14 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
   <!-- ===== 视图：设置 ===== -->
   <main class="view" id="view-set">
     <div class="set-group">
+      <h3>视觉风格</h3>
+      <div class="seg" id="themeSeg">
+        <button data-t="warm">暖橙</button>
+        <button data-t="cool">冷蓝</button>
+        <button data-t="moss">森绿</button>
+      </div>
+    </div>
+    <div class="set-group">
       <h3>每日目标</h3>
       <div class="set-row"><span>每日任务数</span><input type="number" id="goalInput" min="1" max="30" value="5"></div>
       <div class="set-row"><span>连续打卡豁免</span><span class="tip">每周自动给 1 天喘息</span></div>
@@ -288,10 +321,21 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
       <p style="font-size:12px;color:var(--sub);margin-top:8px">强提醒：到点后未完成的任务会推送通知提醒你；温和提醒：每天汇总一次；不提醒：只在打开时看到。</p>
     </div>
     <div class="set-group">
+      <h3>休息日自动跳过</h3>
+      <div class="set-row"><span>周末和法定节假日不打卡</span>
+        <div class="seg" id="holidaySeg">
+          <button data-v="0">关闭</button>
+          <button data-v="1">开启</button>
+        </div>
+      </div>
+      <p style="font-size:12px;color:var(--sub);margin-top:8px">开启后，周六日和中国法定节假日当天自动隐藏所有打卡任务，提示你休息。</p>
+    </div>
+    <div class="set-group">
       <h3>数据</h3>
       <button class="btn ghost" id="exportBtn">导出数据备份（JSON）</button>
       <button class="btn ghost" id="importBtn" style="margin-top:10px">导入数据备份</button>
       <input type="file" id="importFile" accept=".json" style="display:none">
+      <button class="btn ghost" id="clearTodayBtn" style="margin-top:10px">清空自选任务（保留历史记录）</button>
       <button class="btn danger" id="resetBtn" style="margin-top:10px">清空全部数据</button>
     </div>
     <div class="set-group">
@@ -502,10 +546,12 @@ function loadState(){
     if(!s.today) s.today = {};            // 持久自选任务集 { "d1":true }
     if(!s.fav) s.fav = [];
     if(!s.custom) s.custom = [];          // 用户自定义任务 [{id,c,f,w,n}]
-    if(!s.identity) s.identity = "";      // 身份："" 不限 / worker / student / exam / freelance
+    if(!s.identity) s.identity = "";
+    if(!s.theme) s.theme = "warm";
+    if(s.skipHoliday===undefined) s.skipHoliday = false;      // 身份："" 不限 / worker / student / exam / freelance
     if(!s.syncTs) s.syncTs = 0;
     return s;
-  }catch(e){ return {records:{},goal:5,remind:1,remindHour:19,today:{},fav:[],custom:[],identity:"",syncTs:0}; }
+  }catch(e){ return {records:{},goal:5,remind:1,remindHour:19,today:{},fav:[],custom:[],identity:"",theme:"warm",syncTs:0}; }
 }
 var state = loadState();
 function save(){ localStorage.setItem(LS_KEY, JSON.stringify(state)); schedulePush(); }
@@ -513,6 +559,23 @@ function save(){ localStorage.setItem(LS_KEY, JSON.stringify(state)); schedulePu
 /* ===== 日期工具 ===== */
 function fmtDate(d){ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
 function todayStr(){ return fmtDate(new Date()); }
+/* 2026 年中国法定节假日（含调休假期） */
+var HOLIDAYS = {
+  "2026-01-01":1,
+  "2026-02-16":1,"2026-02-17":1,"2026-02-18":1,"2026-02-19":1,"2026-02-20":1,"2026-02-21":1,"2026-02-22":1,
+  "2026-04-04":1,"2026-04-05":1,"2026-04-06":1,
+  "2026-05-01":1,"2026-05-02":1,"2026-05-03":1,"2026-05-04":1,"2026-05-05":1,
+  "2026-06-19":1,"2026-06-20":1,"2026-06-21":1,
+  "2026-09-25":1,"2026-09-26":1,"2026-09-27":1,
+  "2026-10-01":1,"2026-10-02":1,"2026-10-03":1,"2026-10-04":1,"2026-10-05":1,"2026-10-06":1,"2026-10-07":1
+};
+function isRestDay(){
+  if(!state.skipHoliday) return false;
+  var dow = new Date().getDay();
+  if(dow===0 || dow===6) return true;
+  if(HOLIDAYS[todayStr()]) return true;
+  return false;
+}
 var WEEK = ["日","一","二","三","四","五","六"];
 function catById(id){ for(var i=0;i<CATS.length;i++) if(CATS[i].id===id) return CATS[i]; return {name:"其他",color:"#999"}; }
 function taskById(id){
@@ -578,49 +641,91 @@ function todayDone(){
   var t = todayStr();
   return state.records[t] || [];
 }
+function rangeDone(freq){
+  var now = new Date();
+  var start;
+  if(freq==="weekly"){
+    var dow = now.getDay()||7;
+    start = new Date(now); start.setDate(now.getDate()-dow+1);
+  } else {
+    start = new Date(now.getFullYear(), now.getMonth(), 1);
+  }
+  var doneIds = {};
+  for(var d=new Date(start); d<=now; d.setDate(d.getDate()+1)){
+    var rec = state.records[fmtDate(d)];
+    if(rec) for(var i=0;i<rec.length;i++) doneIds[rec[i]] = 1;
+  }
+  return Object.keys(doneIds);
+}
+function setMiniRing(ringId, numId, countId, done, total){
+  var pct = total ? Math.round(done/total*100) : 0;
+  document.getElementById(ringId).style.background = "conic-gradient(var(--accent) "+(pct*3.6)+"deg, var(--line) "+(pct*3.6)+"deg)";
+  document.getElementById(numId).textContent = pct+"%";
+  document.getElementById(countId).textContent = done+"/"+total;
+}
 function renderToday(){
+  if(isRestDay()){
+    document.getElementById("todayCount").textContent = "今天休息";
+    document.getElementById("todayHint").textContent = "周末/节假日，好好享受休息时间";
+    document.getElementById("ringNum").textContent = "休";
+    document.getElementById("ringArc").setAttribute("stroke-dashoffset", 251.2);
+    setMiniRing("weekRing","weekRingNum","weekCount",0,0);
+    setMiniRing("monthRing","monthRingNum","monthCount",0,0);
+    document.getElementById("sDays").textContent = streakDays();
+    document.getElementById("sRate").textContent = weekRate()+"%";
+    document.getElementById("suggestBox").style.display = "none";
+    document.getElementById("todayList").innerHTML = '<div class="empty"><b>今天是休息日</b>不安排打卡任务，好好放松，明天继续</div>';
+    return;
+  }
   var t = todayStr();
   var done = todayDone();
-  var list = [];
-  for(var k in state.today) list.push(k);
-  var doneCount = 0;
-  for(var i=0;i<done.length;i++) if(state.today[done[i]]===false || state.today[done[i]]===undefined) doneCount++;
-  // 兼容：今日已完成集合里已完成的
-  var total = list.length;
-  document.getElementById("todayCount").textContent = "今天 "+doneCount+" / "+total+" 项";
-  document.getElementById("taskCount").textContent = total+" 项 · 点击打卡";
-  var pct = total ? Math.round(doneCount/total*100) : 0;
-  document.getElementById("ringNum").textContent = doneCount;
-  var arc = document.getElementById("ringArc");
-  var off = 251.2 * (1 - pct/100);
-  arc.setAttribute("stroke-dashoffset", off);
-  var hint = "";
-  if(total===0) hint = "去清单库挑几件想做的事吧";
-  else if(pct===100) hint = "全完成，今天摸鱼摸出了成果";
-  else if(pct>=60) hint = "很棒，再点几件就圆满了";
-  else hint = "选几条小事，填满摸鱼时间";
-  document.getElementById("todayHint").textContent = hint;
-  // 连续天数 & 周完成率
+  var groups = {daily:[],weekly:[],monthly:[]};
+  for(var k in state.today){
+    var tk = taskById(k);
+    if(!tk) continue;
+    groups[tk.f||"daily"].push(k);
+  }
+  var dDone = 0;
+  for(var i=0;i<groups.daily.length;i++) if(done.indexOf(groups.daily[i])!==-1) dDone++;
+  var dTotal = groups.daily.length;
+  document.getElementById("todayCount").textContent = "今天 "+dDone+" / "+dTotal+" 项";
+  var pct = dTotal ? Math.round(dDone/dTotal*100) : 0;
+  document.getElementById("ringNum").textContent = dDone;
+  document.getElementById("ringArc").setAttribute("stroke-dashoffset", 251.2*(1-pct/100));
+  var wkDone = rangeDone("weekly"), moDone = rangeDone("monthly");
+  var wDone = 0, mDone = 0;
+  for(var w=0;w<groups.weekly.length;w++) if(wkDone.indexOf(groups.weekly[w])!==-1) wDone++;
+  for(var m=0;m<groups.monthly.length;m++) if(moDone.indexOf(groups.monthly[m])!==-1) mDone++;
+  setMiniRing("weekRing","weekRingNum","weekCount", wDone, groups.weekly.length);
+  setMiniRing("monthRing","monthRingNum","monthCount", mDone, groups.monthly.length);
   document.getElementById("sDays").textContent = streakDays();
   document.getElementById("sRate").textContent = weekRate()+"%";
-  // 清单渲染
+  var hint = dTotal===0 ? "去清单库挑几件想做的事吧" : pct===100 ? "每天的事全完成了" : pct>=60 ? "很棒，再点几件就圆满了" : "选几条小事，填满摸鱼时间";
+  document.getElementById("todayHint").textContent = hint;
   var wrap = document.getElementById("todayList");
-  if(total===0){
+  if(!dTotal && !groups.weekly.length && !groups.monthly.length){
     wrap.innerHTML = '<div class="empty"><b>今天还没有任务</b>去「清单库」挑几件想做的事</div>';
     return;
   }
   var html = "";
-  for(var j=0;j<list.length;j++){
-    var tk = taskById(list[j]);
-    if(!tk) continue;
-    var isDone = done.indexOf(list[j]) !== -1;
-    html += taskHTML(list[j], tk, isDone);
+  var defs = [["daily","每天必做","今天"],["weekly","本周要做","本周"],["monthly","本月要做","本月"]];
+  for(var g=0; g<defs.length; g++){
+    var gid = defs[g][0], items = groups[gid];
+    if(!items.length) continue;
+    var gDone = gid==="daily" ? dDone : (gid==="weekly" ? wDone : mDone);
+    html += '<div class="group-title"><span>'+defs[g][1]+'</span><span>'+gDone+' / '+items.length+'</span></div>';
+    for(var j=0;j<items.length;j++){
+      var id = items[j];
+      var tk = taskById(id);
+      var period = gid==="weekly" ? wkDone : (gid==="monthly" ? moDone : done);
+      html += taskHTML(id, tk, period.indexOf(id)!==-1);
+    }
   }
   wrap.innerHTML = html;
-  // 灵感推荐
   var sb = document.getElementById("suggestBox");
   sb.style.display = "flex";
-  document.getElementById("suggestText").textContent = randomSuggest(list);
+  var all = []; for(var k in state.today) all.push(k);
+  document.getElementById("suggestText").textContent = randomSuggest(all);
 }
 function taskHTML(id, tk, isDone){
   var c = catById(tk.c);
@@ -763,15 +868,25 @@ document.getElementById("libList").addEventListener("click", function(e){
   renderLib();
   toast(state.today[id]!==undefined ? "已加入今日清单" : "已移出今日清单");
 });
+var FREQ_CYCLE = ["daily","weekly","monthly"];
+var FREQ_LABEL = {daily:"每天",weekly:"每周",monthly:"每月"};
+document.getElementById("freqPick").setAttribute("data-f","daily");
+document.getElementById("freqPick").addEventListener("click", function(){
+  var cur = FREQ_CYCLE.indexOf(this.getAttribute("data-f"));
+  var next = FREQ_CYCLE[(cur+1)%3];
+  this.setAttribute("data-f", next);
+  this.textContent = FREQ_LABEL[next];
+});
 function addCustom(){
   var inp = document.getElementById("customInput");
   var v = inp.value.trim();
   if(!v) return;
   var cid = "c"+Date.now();
-  state.custom.push({id:cid, c:"learn", f:"daily", w:"both", n:v});
+  var freq = document.getElementById("freqPick").getAttribute("data-f") || "daily";
+  state.custom.push({id:cid, c:"learn", f:freq, w:"both", n:v});
   state.today[cid] = false;
   inp.value = "";
-  save(); renderIdent(); renderLib(); toast("已添加并加入今日清单");
+  save(); renderIdent(); renderLib(); toast("已添加（"+FREQ_LABEL[freq]+"）并加入清单");
 }
 document.getElementById("customBtn").addEventListener("click", addCustom);
 document.getElementById("customInput").addEventListener("keydown", function(e){ if(e.key==="Enter") addCustom(); });
@@ -846,7 +961,7 @@ function renderHeat(){
     var lv = 0;
     if(cnt>0){ total++; active++; }
     if(cnt>=5) lv=4; else if(cnt>=3) lv=3; else if(cnt>=2) lv=2; else if(cnt>=1) lv=1;
-    html += '<div class="cell'+(lv?(" l"+lv):"")+(today?" today":"")+'" title="'+ds+' 完成 '+cnt+' 项"></div>';
+    html += '<div class="cell'+(lv?(" l"+lv):"")+(today?" today":"")+'" title="'+ds+' 完成 '+cnt+' 项">'+day+'</div>';
   }
   document.getElementById("heatMonth").textContent = y+"年"+(m+1)+"月";
   document.getElementById("heatTotal").textContent = active+" 天有打卡";
@@ -892,19 +1007,19 @@ function renderCatChart(){
       if(tk) counts[tk.c] = (counts[tk.c]||0)+1;
     }
   }
-  var names = [], vals = [], colors = [];
+  var names = [], data = [];
   for(var k=0;k<CATS.length;k++){
     var c = CATS[k];
-    if(counts[c.id]){
-      names.push(c.name); vals.push(counts[c.id]); colors.push(c.color);
-    }
+    var v = counts[c.id]||0;
+    names.push(c.name);
+    data.push({value:v, itemStyle:{color:c.color, borderRadius:[0,6,6,0]}});
   }
   chart.setOption({
-    grid:{left:10,right:20,top:16,bottom:24,containLabel:true},
+    grid:{left:10,right:30,top:16,bottom:24,containLabel:true},
     tooltip:{trigger:"item",triggerOn:"click",renderMode:"richText",confine:true},
-    xAxis:{type:"value",axisLabel:{fontSize:11},splitLine:{lineStyle:{color:"#F1EDE4"}}},
-    yAxis:{type:"category",data:names.reverse(),axisLabel:{fontSize:11},axisTick:{show:false},axisLine:{lineStyle:{color:"#ECE7DE"}}},
-    series:[{type:"bar",data:vals.reverse(),barWidth:12,itemStyle:{color:function(p){ return colors[colors.length-1-p.dataIndex]; }},label:{show:true,position:"right",fontSize:10,color:"#8A857C"}}]
+    xAxis:{type:"value",minInterval:1,axisLabel:{fontSize:11},splitLine:{lineStyle:{color:"#F1EDE4"}}},
+    yAxis:{type:"category",data:names,inverse:true,axisLabel:{fontSize:11},axisTick:{show:false},axisLine:{lineStyle:{color:"#ECE7DE"}}},
+    series:[{type:"bar",data:data,barWidth:10,barCategoryGap:"45%",label:{show:true,position:"right",fontSize:10,color:"#8A857C"}}]
   });
   chart.resize();
 }
@@ -934,7 +1049,26 @@ function renderSet(){
   document.getElementById("remindHour").value = state.remindHour;
   var segs = document.querySelectorAll("#remindSeg button");
   for(var i=0;i<segs.length;i++) segs[i].classList.toggle("on", parseInt(segs[i].getAttribute("data-v"))===state.remind);
+  var tsegs = document.querySelectorAll("#themeSeg button");
+  for(var j=0;j<tsegs.length;j++) tsegs[j].classList.toggle("on", tsegs[j].getAttribute("data-t")===(state.theme||"warm"));
+  var hsegs = document.querySelectorAll("#holidaySeg button");
+  for(var k=0;k<hsegs.length;k++) hsegs[k].classList.toggle("on", parseInt(hsegs[k].getAttribute("data-v"))===(state.skipHoliday?1:0));
 }
+document.getElementById("holidaySeg").addEventListener("click", function(e){
+  var b = e.target.closest ? e.target.closest("button") : null;
+  if(!b) return;
+  state.skipHoliday = parseInt(b.getAttribute("data-v"))===1;
+  save(); renderSet(); renderToday();
+  toast(state.skipHoliday ? "已开启休息日自动跳过" : "已关闭，周末也正常打卡");
+});
+document.getElementById("themeSeg").addEventListener("click", function(e){
+  var b = e.target.closest ? e.target.closest("button") : null;
+  if(!b) return;
+  state.theme = b.getAttribute("data-t");
+  document.body.dataset.theme = state.theme;
+  save(); renderSet();
+  toast("已切换视觉风格");
+});
 document.getElementById("goalInput").addEventListener("change", function(){
   var v = parseInt(this.value);
   if(!v || v<1) v=5; if(v>30) v=30;
@@ -981,9 +1115,15 @@ document.getElementById("importFile").addEventListener("change", function(e){
   reader.readAsText(f);
   e.target.value = "";
 });
+document.getElementById("clearTodayBtn").addEventListener("click", function(){
+  if(confirm("确定清空所有自选任务吗？历史打卡记录和自定义任务都会保留，只是今日清单变空。")){
+    state.today = {};
+    save(); renderToday(); toast("已清空自选任务");
+  }
+});
 document.getElementById("resetBtn").addEventListener("click", function(){
   if(confirm("确定清空全部打卡数据吗？此操作不可恢复。")){
-    state = {records:{},goal:5,remind:1,remindHour:19,today:{},fav:[],syncTs:0};
+    state = {records:{},goal:5,remind:1,remindHour:19,today:{},fav:[],custom:state.custom,identity:state.identity,theme:state.theme,syncTs:0};
     save(); renderAll(); toast("已清空");
   }
 });
@@ -1116,7 +1256,8 @@ function parseSyncParam(){
     var rm = location.search.match(/[?&]room=([^&]+)/);
     if(rm){
       var topic = decodeURIComponent(rm[1]);
-      var pw = decodeURIComponent((location.hash||"").replace(/^#/,""));
+      var pm = location.search.match(/[?&]pw=([^&]+)/);
+      var pw = pm ? decodeURIComponent(pm[1]) : decodeURIComponent((location.hash||"").replace(/^#/,""));
       if(topic && pw){
         room = { topic:topic, pw:pw, lastTime:"all" };
         saveRoom(); renderRoom(); pollRoom();
@@ -1188,6 +1329,9 @@ function pollRoom(){
     saveRoom();
     if(changed) renderAll();
     updRoomStatus(changed, false);
+    if(!changed && !lines.length && !Object.keys(state.records).length){
+      toast("还没拉到电脑端数据，请确认电脑端已开启自动同步");
+    }
   }).catch(function(){ updRoomStatus(false, true); });
 }
 function renderRoom(){
@@ -1200,7 +1344,7 @@ function renderRoom(){
     box.innerHTML = "";
     if(typeof QRCode !== "undefined" && location.protocol.indexOf("http") === 0){
       var base = location.href.split("?")[0].split("#")[0];
-      var url = base + "?room=" + encodeURIComponent(room.topic) + "#" + encodeURIComponent(room.pw);
+      var url = base + "?room=" + encodeURIComponent(room.topic) + "&pw=" + encodeURIComponent(room.pw);
       try{ new QRCode(box, {text:url, width:160, height:160, correctLevel:QRCode.CorrectLevel.L}); }catch(e){}
     }
   } else {
@@ -1258,7 +1402,8 @@ function toast(msg){
 }
 
 function renderAll(){
-  renderTop(); ensureToday(); renderToday(); renderCatChips(); renderSet(); renderSync(); renderRoom();
+  renderTop(); ensureToday();
+document.body.dataset.theme = state.theme || "warm"; renderToday(); renderCatChips(); renderSet(); renderSync(); renderRoom();
 }
 document.addEventListener("visibilitychange", function(){
   if(!document.hidden) renderAll();
