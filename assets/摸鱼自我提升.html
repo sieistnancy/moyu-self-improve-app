@@ -70,7 +70,7 @@ input{font-family:inherit}
 .mp-ring span{width:28px;height:28px;background:var(--card);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--ink)}
 .mp-txt b{font-size:14px;display:block;line-height:1.1}
 .mp-txt span{font-size:10px;color:var(--sub)}
-.group-title{display:flex;align-items:center;justify-content:space-between;padding:14px 6px 8px;font-size:13px;font-weight:700;color:var(--ink)}
+.group-title{display:flex;align-items:center;justify-content:space-between;padding:14px 6px 8px;font-size:13px;font-weight:700;color:var(--ink);grid-column:1/-1}
 .group-title span{font-size:11px;color:var(--sub);font-weight:400}
 .suggest{display:flex;align-items:center;gap:10px;background:var(--accent-soft);border-radius:14px;padding:12px 14px;margin-bottom:16px;font-size:13px;color:#7A4A33}
 .suggest b{font-weight:700}
@@ -135,6 +135,7 @@ input{font-family:inherit}
 .add-custom{display:flex;gap:8px;background:var(--card);border-radius:12px;padding:9px 11px;box-shadow:var(--shadow);margin-bottom:10px;align-items:center}
 .add-custom input{flex:1;border:none;outline:none;background:none;font-size:13px;color:var(--ink)}
 .add-custom button{flex:none;font-size:12.5px;padding:6px 12px;border-radius:9px;background:var(--accent-soft);color:var(--accent-deep);font-weight:600;cursor:pointer}
+.add-custom #freqPick{background:var(--bg);color:var(--sub);font-weight:500}
 .lib-item .tag{flex:none;font-size:10.5px;color:var(--sub);background:var(--bg);border-radius:6px;padding:2px 6px}
 .lib-item .del{flex:none;width:24px;height:24px;border-radius:8px;background:var(--bg);color:var(--sub);font-size:14px;line-height:24px;text-align:center;cursor:pointer;padding:0}
 @media(min-width:760px){.lib-side{width:110px}}
@@ -145,7 +146,7 @@ input{font-family:inherit}
 .stat-card .sub{font-size:12px;color:var(--sub);margin-bottom:12px}
 .heat-wrap{overflow-x:auto}
 .heat{display:grid;grid-auto-flow:column;grid-template-rows:repeat(7,1fr);gap:4px;min-width:520px;padding-bottom:4px}
-.heat .cell{width:17px;height:17px;border-radius:4px;background:var(--line)}
+.heat .cell{width:17px;height:17px;border-radius:4px;background:var(--line);display:flex;align-items:center;justify-content:center;font-size:9px;color:#fff}
 .heat .cell.l1{background:#F6DFD2}
 .heat .cell.l2{background:#EFC3AC}
 .heat .cell.l3{background:#E8A788}
@@ -260,6 +261,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         </div>
         <div class="add-custom">
           <input id="customInput" type="text" placeholder="+ 我的自定义任务，回车添加" autocomplete="off">
+          <button id="freqPick" type="button">每天</button>
           <button id="customBtn">添加</button>
         </div>
         <div class="lib-list" id="libList"></div>
@@ -322,6 +324,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
       <button class="btn ghost" id="exportBtn">导出数据备份（JSON）</button>
       <button class="btn ghost" id="importBtn" style="margin-top:10px">导入数据备份</button>
       <input type="file" id="importFile" accept=".json" style="display:none">
+      <button class="btn ghost" id="clearTodayBtn" style="margin-top:10px">清空自选任务（保留历史记录）</button>
       <button class="btn danger" id="resetBtn" style="margin-top:10px">清空全部数据</button>
     </div>
     <div class="set-group">
@@ -823,15 +826,25 @@ document.getElementById("libList").addEventListener("click", function(e){
   renderLib();
   toast(state.today[id]!==undefined ? "已加入今日清单" : "已移出今日清单");
 });
+var FREQ_CYCLE = ["daily","weekly","monthly"];
+var FREQ_LABEL = {daily:"每天",weekly:"每周",monthly:"每月"};
+document.getElementById("freqPick").setAttribute("data-f","daily");
+document.getElementById("freqPick").addEventListener("click", function(){
+  var cur = FREQ_CYCLE.indexOf(this.getAttribute("data-f"));
+  var next = FREQ_CYCLE[(cur+1)%3];
+  this.setAttribute("data-f", next);
+  this.textContent = FREQ_LABEL[next];
+});
 function addCustom(){
   var inp = document.getElementById("customInput");
   var v = inp.value.trim();
   if(!v) return;
   var cid = "c"+Date.now();
-  state.custom.push({id:cid, c:"learn", f:"daily", w:"both", n:v});
+  var freq = document.getElementById("freqPick").getAttribute("data-f") || "daily";
+  state.custom.push({id:cid, c:"learn", f:freq, w:"both", n:v});
   state.today[cid] = false;
   inp.value = "";
-  save(); renderIdent(); renderLib(); toast("已添加并加入今日清单");
+  save(); renderIdent(); renderLib(); toast("已添加（"+FREQ_LABEL[freq]+"）并加入清单");
 }
 document.getElementById("customBtn").addEventListener("click", addCustom);
 document.getElementById("customInput").addEventListener("keydown", function(e){ if(e.key==="Enter") addCustom(); });
@@ -906,7 +919,7 @@ function renderHeat(){
     var lv = 0;
     if(cnt>0){ total++; active++; }
     if(cnt>=5) lv=4; else if(cnt>=3) lv=3; else if(cnt>=2) lv=2; else if(cnt>=1) lv=1;
-    html += '<div class="cell'+(lv?(" l"+lv):"")+(today?" today":"")+'" title="'+ds+' 完成 '+cnt+' 项"></div>';
+    html += '<div class="cell'+(lv?(" l"+lv):"")+(today?" today":"")+'" title="'+ds+' 完成 '+cnt+' 项">'+(cnt?cnt:"")+'</div>';
   }
   document.getElementById("heatMonth").textContent = y+"年"+(m+1)+"月";
   document.getElementById("heatTotal").textContent = active+" 天有打卡";
@@ -952,19 +965,19 @@ function renderCatChart(){
       if(tk) counts[tk.c] = (counts[tk.c]||0)+1;
     }
   }
-  var names = [], vals = [], colors = [];
+  var names = [], data = [];
   for(var k=0;k<CATS.length;k++){
     var c = CATS[k];
-    if(counts[c.id]){
-      names.push(c.name); vals.push(counts[c.id]); colors.push(c.color);
-    }
+    var v = counts[c.id]||0;
+    names.push(c.name);
+    data.push({value:v, itemStyle:{color:c.color, borderRadius:[0,6,6,0]}});
   }
   chart.setOption({
-    grid:{left:10,right:20,top:16,bottom:24,containLabel:true},
+    grid:{left:10,right:30,top:16,bottom:24,containLabel:true},
     tooltip:{trigger:"item",triggerOn:"click",renderMode:"richText",confine:true},
-    xAxis:{type:"value",axisLabel:{fontSize:11},splitLine:{lineStyle:{color:"#F1EDE4"}}},
-    yAxis:{type:"category",data:names.reverse(),axisLabel:{fontSize:11},axisTick:{show:false},axisLine:{lineStyle:{color:"#ECE7DE"}}},
-    series:[{type:"bar",data:vals.reverse(),barWidth:12,itemStyle:{color:function(p){ return colors[colors.length-1-p.dataIndex]; }},label:{show:true,position:"right",fontSize:10,color:"#8A857C"}}]
+    xAxis:{type:"value",minInterval:1,axisLabel:{fontSize:11},splitLine:{lineStyle:{color:"#F1EDE4"}}},
+    yAxis:{type:"category",data:names,inverse:true,axisLabel:{fontSize:11},axisTick:{show:false},axisLine:{lineStyle:{color:"#ECE7DE"}}},
+    series:[{type:"bar",data:data,barWidth:10,barCategoryGap:"45%",label:{show:true,position:"right",fontSize:10,color:"#8A857C"}}]
   });
   chart.resize();
 }
@@ -1051,9 +1064,15 @@ document.getElementById("importFile").addEventListener("change", function(e){
   reader.readAsText(f);
   e.target.value = "";
 });
+document.getElementById("clearTodayBtn").addEventListener("click", function(){
+  if(confirm("确定清空所有自选任务吗？历史打卡记录和自定义任务都会保留，只是今日清单变空。")){
+    state.today = {};
+    save(); renderToday(); toast("已清空自选任务");
+  }
+});
 document.getElementById("resetBtn").addEventListener("click", function(){
   if(confirm("确定清空全部打卡数据吗？此操作不可恢复。")){
-    state = {records:{},goal:5,remind:1,remindHour:19,today:{},fav:[],syncTs:0};
+    state = {records:{},goal:5,remind:1,remindHour:19,today:{},fav:[],custom:state.custom,identity:state.identity,theme:state.theme,syncTs:0};
     save(); renderAll(); toast("已清空");
   }
 });
