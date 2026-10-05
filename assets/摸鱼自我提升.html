@@ -132,9 +132,10 @@ input{font-family:inherit}
 .ident-chip,.freq-chip{flex:none;font-size:12px;padding:6px 12px;border-radius:16px;background:var(--card);color:var(--sub);box-shadow:var(--shadow);cursor:pointer}
 .ident-chip.on{background:var(--accent);color:#fff;font-weight:600}
 .freq-chip.on{background:var(--ink);color:#fff;font-weight:600}
-.add-custom{display:flex;gap:8px;background:var(--card);border-radius:12px;padding:9px 11px;box-shadow:var(--shadow);margin-bottom:10px;align-items:center}
-.add-custom input{flex:1;border:none;outline:none;background:none;font-size:13px;color:var(--ink)}
-.add-custom button{flex:none;font-size:12.5px;padding:6px 12px;border-radius:9px;background:var(--accent-soft);color:var(--accent-deep);font-weight:600;cursor:pointer}
+.add-custom{display:flex;flex-wrap:wrap;gap:8px;background:var(--card);border-radius:12px;padding:9px 11px;box-shadow:var(--shadow);margin-bottom:10px;align-items:center}
+.add-custom input{flex:1 1 100%;min-width:0}
+.add-custom input{border:none;outline:none;background:none;font-size:13px;color:var(--ink)}
+.add-custom button{flex:1;font-size:12.5px;padding:8px 0;border-radius:9px;background:var(--accent-soft);color:var(--accent-deep);font-weight:600;cursor:pointer}
 .add-custom #freqPick{background:var(--bg);color:var(--sub);font-weight:500}
 .lib-item .tag{flex:none;font-size:10.5px;color:var(--sub);background:var(--bg);border-radius:6px;padding:2px 6px}
 .lib-item .del{flex:none;width:24px;height:24px;border-radius:8px;background:var(--bg);color:var(--sub);font-size:14px;line-height:24px;text-align:center;cursor:pointer;padding:0}
@@ -305,7 +306,6 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
     </div>
     <div class="set-group">
       <h3>每日目标</h3>
-      <div class="set-row"><span>每日任务数</span><input type="number" id="goalInput" min="1" max="30" value="5"></div>
       <div class="set-row"><span>连续打卡豁免</span><span class="tip">每周自动给 1 天喘息</span></div>
     </div>
     <div class="set-group">
@@ -360,6 +360,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
       <div id="roomOn" style="display:none">
         <p class="sync-tip" id="roomStatus">连接中…</p>
         <div id="roomQrBox" style="display:flex;justify-content:center;margin:10px 0"></div>
+        <button class="btn" id="roomSyncBtn" style="margin-top:4px">立即同步</button>
         <button class="btn ghost" id="roomStopBtn" style="margin-top:4px">关闭自动同步</button>
       </div>
     </div>
@@ -1045,7 +1046,6 @@ function renderInsight(){
 
 /* ===== 设置 ===== */
 function renderSet(){
-  document.getElementById("goalInput").value = state.goal;
   document.getElementById("remindHour").value = state.remindHour;
   var segs = document.querySelectorAll("#remindSeg button");
   for(var i=0;i<segs.length;i++) segs[i].classList.toggle("on", parseInt(segs[i].getAttribute("data-v"))===state.remind);
@@ -1068,11 +1068,6 @@ document.getElementById("themeSeg").addEventListener("click", function(e){
   document.body.dataset.theme = state.theme;
   save(); renderSet();
   toast("已切换视觉风格");
-});
-document.getElementById("goalInput").addEventListener("change", function(){
-  var v = parseInt(this.value);
-  if(!v || v<1) v=5; if(v>30) v=30;
-  state.goal = v; save(); toast("每日目标已设为 "+v+" 项");
 });
 document.getElementById("remindSeg").addEventListener("click", function(e){
   var b = e.target.closest ? e.target.closest("button") : null;
@@ -1136,7 +1131,7 @@ function buildSyncData(){
   }
   var today = [];
   for(var k in state.today) today.push(k);
-  return {v:1, ts:Date.now(), records:rec, today:today, goal:state.goal, remind:state.remind, remindHour:state.remindHour, custom:state.custom, identity:state.identity};
+  return {v:1, ts:Date.now(), records:rec, today:today, remind:state.remind, remindHour:state.remindHour, custom:state.custom, identity:state.identity, theme:state.theme, skipHoliday:state.skipHoliday};
 }
 function buildSyncText(){
   return "MOYUSYNC1:" + JSON.stringify(buildSyncData());
@@ -1169,8 +1164,11 @@ function mergeSyncData(d){
     if(d.remindHour!==undefined) state.remindHour = d.remindHour;
     if(d.custom) state.custom = d.custom;
     if(d.identity) state.identity = d.identity;
+    if(d.theme) state.theme = d.theme;
+    if(d.skipHoliday!==undefined) state.skipHoliday = d.skipHoliday;
   }
   state.syncTs = Math.max(newTs, state.syncTs||0);
+  if(d.theme) document.body.dataset.theme = d.theme;
   save();
   return merged;
 }
@@ -1358,6 +1356,11 @@ document.getElementById("roomStartBtn").addEventListener("click", function(){
   room = { topic:"moyu-" + randId(20), pw: randId(10), lastTime:"all" };
   saveRoom(); renderRoom(); pushRoom();
   toast("房间已开启，用另一台设备扫码绑定");
+});
+document.getElementById("roomSyncBtn").addEventListener("click", function(){
+  pushRoom();
+  pollRoom();
+  toast("正在同步…");
 });
 document.getElementById("roomStopBtn").addEventListener("click", function(){
   room = null; saveRoom(); renderRoom(); toast("已关闭自动同步");
