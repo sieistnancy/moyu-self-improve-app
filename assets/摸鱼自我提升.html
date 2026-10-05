@@ -1256,7 +1256,8 @@ function parseSyncParam(){
     var rm = location.search.match(/[?&]room=([^&]+)/);
     if(rm){
       var topic = decodeURIComponent(rm[1]);
-      var pw = decodeURIComponent((location.hash||"").replace(/^#/,""));
+      var pm = location.search.match(/[?&]pw=([^&]+)/);
+      var pw = pm ? decodeURIComponent(pm[1]) : decodeURIComponent((location.hash||"").replace(/^#/,""));
       if(topic && pw){
         room = { topic:topic, pw:pw, lastTime:"all" };
         saveRoom(); renderRoom(); pollRoom();
@@ -1328,6 +1329,9 @@ function pollRoom(){
     saveRoom();
     if(changed) renderAll();
     updRoomStatus(changed, false);
+    if(!changed && !lines.length && !Object.keys(state.records).length){
+      toast("还没拉到电脑端数据，请确认电脑端已开启自动同步");
+    }
   }).catch(function(){ updRoomStatus(false, true); });
 }
 function renderRoom(){
@@ -1340,7 +1344,7 @@ function renderRoom(){
     box.innerHTML = "";
     if(typeof QRCode !== "undefined" && location.protocol.indexOf("http") === 0){
       var base = location.href.split("?")[0].split("#")[0];
-      var url = base + "?room=" + encodeURIComponent(room.topic) + "#" + encodeURIComponent(room.pw);
+      var url = base + "?room=" + encodeURIComponent(room.topic) + "&pw=" + encodeURIComponent(room.pw);
       try{ new QRCode(box, {text:url, width:160, height:160, correctLevel:QRCode.CorrectLevel.L}); }catch(e){}
     }
   } else {
