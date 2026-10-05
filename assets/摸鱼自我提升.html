@@ -1140,7 +1140,10 @@ function buildSyncText(){
 }
 function parseSyncText(txt){
   txt = String(txt||"").trim();
-  if(txt.indexOf("MOYUSYNC1:")===0) txt = txt.slice(10);
+  // 容错：从任意位置提取第一个 {...} 块，忽略微信/浏览器带入的噪音
+  var start = txt.indexOf("{"), end = txt.lastIndexOf("}");
+  if(start<0 || end<=start) throw new Error("no json");
+  txt = txt.slice(start, end+1);
   var d = JSON.parse(txt);
   if(!d || !d.records || typeof d.records !== "object") throw new Error("bad");
   return d;
@@ -1219,7 +1222,26 @@ document.getElementById("copySyncBtn").addEventListener("click", function(){
   var txt = buildSyncText();
   var ta = document.getElementById("syncText");
   ta.value = txt;
-  var done = function(){ toast("同步文本已复制，去另一台设备粘贴并合并"); };
+  var base = location.href.split("?")[0].split("#")[0];
+  var done = function(){
+    toast("同步文本已复制！");
+    var old = document.getElementById("copyTip");
+    if(old) old.remove();
+    var tip = document.createElement("div");
+    tip.id = "copyTip";
+    tip.style.cssText = "margin-top:12px;padding:14px;background:var(--accent-soft);border-radius:12px;font-size:12.5px;color:var(--accent-deep);line-height:1.7";
+    var qrHtml = "";
+    if(location.protocol.indexOf("http")===0 && typeof QRCode!=="undefined"){
+      qrHtml = '<div style="display:flex;justify-content:center;margin:10px 0"><div id="copyQrBox"></div></div>';
+    }
+    tip.innerHTML = '<b>下一步：</b><br>1. 手机相机扫下面的二维码，直接打开本页面<br>2. 进「同步」页，在输入框粘贴（文本已复制到剪贴板）<br>3. 点「合并数据」' + qrHtml;
+    document.getElementById("copySyncBtn").after(tip);
+    if(qrHtml){
+      setTimeout(function(){
+        try{ new QRCode(document.getElementById("copyQrBox"), {text:base, width:150, height:150, correctLevel:QRCode.CorrectLevel.L}); }catch(e){}
+      }, 50);
+    }
+  };
   if(navigator.clipboard && navigator.clipboard.writeText){
     navigator.clipboard.writeText(txt).then(done, function(){ ta.select(); document.execCommand("copy"); done(); });
   } else {
